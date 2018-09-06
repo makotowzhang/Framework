@@ -1,0 +1,14 @@
+.vs/
+Business/bin/
+Business/obj/
+Common/bin/
+Common/obj/
+Data/bin/
+Data/obj/
+Entity/bin/
+Entity/obj/
+GUGFramework/bin/
+GUGFramework/obj/
+Model/bin/
+Model/obj/
+packages/
