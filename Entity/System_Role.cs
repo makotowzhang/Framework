@@ -12,14 +12,14 @@ namespace Entity
     using System;
     using System.Collections.Generic;
     
-    public partial class System_User
+    public partial class System_Role
     {
         public System.Guid Id { get; set; }
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string TrueName { get; set; }
+        public string RoleName { get; set; }
+        public string RoleDesc { get; set; }
+        public Nullable<int> Sort { get; set; }
         public Nullable<bool> IsEnabled { get; set; }
-        public Nullable<bool> IsDel { get; set; }
+        public Nullable<bool> IsDelete { get; set; }
         public Nullable<System.Guid> CreateUser { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.Guid> UpdateUser { get; set; }

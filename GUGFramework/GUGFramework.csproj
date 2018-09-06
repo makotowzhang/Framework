@@ -148,7 +148,9 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WelcomeController.cs" />
@@ -159,6 +161,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\CommonStyle.css" />
+    <Content Include="Content\Css\login.css" />
     <Content Include="Content\iconfont\demo.css" />
     <Content Include="Content\iconfont\demo_fontclass.html" />
     <Content Include="Content\iconfont\demo_symbol.html" />
@@ -166,6 +169,8 @@
     <Content Include="Content\iconfont\iconfont.css" />
     <Content Include="Content\iconfont\iconfont.js" />
     <Content Include="Content\iconfont\iconfont.svg" />
+    <Content Include="Content\Images\login-img.png" />
+    <Content Include="Content\Images\login_logo.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="ApplicationInsights.config">
@@ -203,6 +208,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="fonts\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\iconfont\iconfont.eot" />
@@ -217,11 +223,16 @@
     <Content Include="Scripts\Axios\axios.min.map" />
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\User\Index.cshtml" />
+    <Content Include="Views\Login\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">
       <Project>{62cb4c30-7513-4b7e-8581-52cacfc76834}</Project>
       <Name>Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{90fa9562-63b4-427b-93b0-b6db2c66f27f}</Project>
+      <Name>Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Model\Model.csproj">
       <Project>{0b51ae13-de95-4fc0-aab6-f2abcafebd9e}</Project>

@@ -21,9 +21,9 @@ namespace Entity
         public Nullable<int> Sort { get; set; }
         public Nullable<bool> IsEnable { get; set; }
         public Nullable<bool> IsDel { get; set; }
-        public string CreateUser { get; set; }
+        public Nullable<System.Guid> CreateUser { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
-        public string UpdateUser { get; set; }
+        public Nullable<System.Guid> UpdateUser { get; set; }
         public Nullable<System.DateTime> UpdateTime { get; set; }
     }
 }

@@ -69,7 +69,13 @@
     <Compile Include="System_Menu.cs">
       <DependentUpon>DataEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="System_Role.cs">
+      <DependentUpon>DataEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="System_User.cs">
+      <DependentUpon>DataEntity.tt</DependentUpon>
+    </Compile>
+    <Compile Include="System_UserRole.cs">
       <DependentUpon>DataEntity.tt</DependentUpon>
     </Compile>
   </ItemGroup>
