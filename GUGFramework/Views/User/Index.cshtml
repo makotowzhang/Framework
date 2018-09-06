@@ -1,0 +1,326 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>用户管理</title>
+    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
+    <script src="~/Scripts/Vue/vue.js"></script>
+    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
+    <script src="~/Scripts/ElementUI/index.js"></script>
+    <script src="~/Scripts/Axios/axios.min.js"></script>
+    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <div id="App" ref="App" v-loading="Loading.bodyLoading">
+        <template>
+            <div ref="QueryFormDiv">
+                <el-form :model="QueryFormData" :inline="true" class="Query_Form" ref="QueryForm" @@submit.native.prevent>
+                    <el-form-item label="用户名" prop="UserName">
+                        <el-input v-model="QueryFormData.UserName"  placeholder="请输入用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @@click="onQuery">查询</el-button>
+                        <el-button type="primary" @@click="resetQueryForm">重置</el-button>
+                    </el-form-item>
+                </el-form>
+                <el-row class="Table_Button_Row">
+                    <el-col :span="24">
+                        <el-button type="primary" ref="btnAdd" @@click="openAddDialog">新增</el-button>
+                        <el-button type="primary" :disabled="ButtonState.btnEdit" ref="btnEdit" @@click="openEditDialog">编辑</el-button>
+                        <el-button type="danger" :disabled="ButtonState.btnDelete" ref="btnDelete" @@click="deleteClick">删除</el-button>
+                    </el-col>
+                </el-row>
+            </div>
+            <el-table ref="dataTable"
+                      :data="tableData"
+                      :border="true"
+                      :height="tableHeight"
+                      @@selection-change="selectChange"
+                      @@row-click="rowClick"
+                      style="width: 100%;margin-top:20px;"
+                      element-loading-text="拼命加载中"
+                      element-loading-spinner="el-icon-loading"
+                      element-loading-background="rgba(50, 50,50, 0.8)"
+                      v-loading="Loading.tableLoading">
+                <el-table-column type="selection"
+                                 width="50">
+                </el-table-column>
+                <el-table-column prop="UserName"
+                                 label="用户名"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="TrueName"
+                                 label="姓名"
+                                 width="180">
+                </el-table-column>
+                <el-table-column prop="IsEnabled"
+                                 label="是否启用">
+                    <template slot-scope="scope">
+                        {{ scope.row.IsEnabled?"是":"否" }}
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div ref="Pagination">
+                <el-pagination @@size-change="handleSizeChange"
+                               @@current-change="handleCurrentChange"
+                               :current-page="4"
+                               :page-sizes="[100, 200, 300, 400]"
+                               :page-size="100"
+                               layout="total, sizes, prev, pager, next, jumper"
+                               :total="400"
+                               style="width:100%;padding-left:20px;box-sizing:border-box">
+                </el-pagination>
+            </div>
+            <el-dialog title="新增"
+                       :visible.sync="Dialog.addDialog"
+                       width="500px">
+                <el-form :model="AddFormData" :rules="AddFormRule" label-width="80px" ref="AddForm" @@submit.native.prevent>
+                    <el-form-item label="用户名" prop="UserName">
+                        <el-input v-model="AddFormData.UserName" placeholder="请输入用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名" prop="TrueName">
+                        <el-input v-model="AddFormData.TrueName" placeholder="请输入姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否启用" prop="IsEnabled">
+                        <el-switch v-model="AddFormData.IsEnabled"
+                                   active-color="#13ce66"
+                                   inactive-color="#ff4949">
+                        </el-switch>
+                    </el-form-item>
+                    <el-form-item label="用户角色" prop="UserRole">
+                        <el-select v-model="AddFormData.UserRole"
+                                   multiple
+                                   collapse-tags
+                                   placeholder="请选择">
+                            <el-option v-for="item in SelectOption.userRoleOption"
+                                       :key="item.value"
+                                       :label="item.text"
+                                       :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @@click="submitAddForm">保 存</el-button>
+                    <el-button @@click="cancelAddForm">取 消</el-button>
+                </span>
+            </el-dialog>
+            <el-dialog title="编辑"
+                       :visible.sync="Dialog.editDialog"
+                       width="500px">
+                <el-form :model="EditFormData" :rules="EditFormRule" label-width="80px" ref="EditForm" @@submit.native.prevent>
+                    <el-form-item label="用户名" prop="UserName">
+                        <el-input v-model="EditFormData.UserName" placeholder="请输入用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名" prop="TrueName">
+                        <el-input v-model="EditFormData.TrueName" placeholder="请输入姓名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否启用" prop="IsEnabled">
+                        <el-switch v-model="EditFormData.IsEnabled"
+                                   active-color="#13ce66"
+                                   inactive-color="#ff4949">
+                        </el-switch>
+                    </el-form-item>
+                    <el-form-item label="用户角色" prop="UserRole">
+                        <el-select v-model="EditFormData.UserRole"
+                                   multiple
+                                   collapse-tags
+                                   placeholder="请选择">
+                            <el-option v-for="item in SelectOption.userRoleOption"
+                                       :key="item.value"
+                                       :label="item.text"
+                                       :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @@click="submitEditForm">保 存</el-button>
+                    <el-button @@click="cancelEditForm">取 消</el-button>
+                </span>
+            </el-dialog>
+        </template>
+    </div>
+</body>
+</html>
+<script>
+    $vue = new Vue({
+        el: "#App",
+        data: {
+            QueryFormData: {
+                UserName: ""
+            },
+            tableData: [
+                { UserName: "admin", TrueName: "管理员", IsEnabled: true },
+                { UserName: "zhangsan", TrueName: "张三", IsEnabled: false }
+            ],
+            tableHeight: 500,
+            ButtonState: {
+                btnEdit: true,
+                btnDelete: true
+            },
+            Dialog: {
+                addDialog: false,
+                editDialog: false
+            },
+            AddFormData: {
+                UserName: "",
+                TrueName: "",
+                IsEnabled: true,
+                UserRole: []
+            },
+            AddFormRule: {
+                UserName: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'blur' }
+                ],
+                TrueName: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'blur' }
+                ],
+                UserRole: [
+                    { required: true, message: '请选择角色', trigger: 'change' },
+                ]
+            },
+            EditFormData: {
+                UserName: "",
+                TrueName: "",
+                IsEnabled: true,
+                UserRole: []
+            },
+            EditFormRule: {
+                UserName: [
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'blur' }
+                ],
+                TrueName: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'blur' }
+                ],
+                UserRole: [
+                    { required: true, message: '请选择角色', trigger: 'change' },
+                ]
+            },
+            SelectOption: {
+                userRoleOption: [
+                    { text: "管理员", value: "admin" },
+                    { text: "领导", value: "leader" },
+                    { text: "员工", value: "employee" }
+                ]
+            },
+            Loading: {
+                bodyLoading: false,
+                tableLoading: false
+            }
+        },
+        methods: {
+            onQuery: function () {
+            },
+            resetQueryForm: function () {
+                this.$refs.QueryForm.resetFields();
+            },
+            openAddDialog: function () {
+                this.Dialog.addDialog = true;
+            },
+            openEditDialog: function () {
+                this.EditFormData = {
+                    UserName: "admin",
+                    TrueName: "管理员",
+                    IsEnabled: false,
+                    UserRole: ["admin","leader"]
+                };
+                this.Dialog.editDialog = true;
+            },
+            submitAddForm: function () {
+                this.$refs.AddForm.validate(function (success, validateobj) {
+                    if (success) {
+                        axios.post("AddUser", $vue.AddFormData).then(function (response) {
+                            console.log(response);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });
+            },
+            cancelAddForm: function () {
+                this.Dialog.addDialog = false;
+                this.$refs.AddForm.resetFields();
+            },
+            submitEditForm: function () {
+                this.$refs.AddForm.validate(function (success, validateobj) {
+                    if (success) {
+                        axios.post("AddUser", $vue.AddFormData).then(function (response) {
+                            console.log(response);
+                        }).catch(function (error) {
+                            console.log(error);
+                        });
+                    }
+                });
+            },
+            cancelEditForm: function () {
+                this.Dialog.editDialog = false;
+                this.$refs.EditForm.resetFields();
+            },
+            deleteClick: function () {
+                this.$confirm('是否确认删除这' + this.$refs.dataTable.selection.length + '行数据', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    $vue.Loading.bodyLoading = true;
+                    //$vue.$message({
+                    //    type: 'success',
+                    //    message: '删除成功!'
+                    //});
+                }).catch(function() {
+                    $vue.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+            selectChange: function (selectValue) {
+                console.log(selectValue);
+            },
+            rowClick: function (row, event, column) {
+                this.$refs.dataTable.toggleRowSelection(row);
+                if (this.$refs.dataTable.selection.length == 0) {
+                    this.ButtonState.btnEdit = true;
+                    this.ButtonState.btnDelete = true;
+                }
+                else if (this.$refs.dataTable.selection.length == 1) {
+                    this.ButtonState.btnEdit = false;
+                    this.ButtonState.btnDelete = false;
+                }
+                else {
+                    this.ButtonState.btnEdit = true;
+                    this.ButtonState.btnDelete = false;
+                } 
+            },
+            handleSizeChange: function (val) {
+                //console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange: function (val) {
+               // console.log(`当前页: ${val}`);
+            },
+            closeAddDialog: function (done) {
+                done();
+            }
+        }
+
+    });
+    window.onresize = function () {
+        $vue.tableHeight = $vue.$refs.App.getBoundingClientRect().height -
+            $vue.$refs.QueryFormDiv.getBoundingClientRect().height -
+            $vue.$refs.Pagination.getBoundingClientRect().height-20;
+    }
+    window.onresize();
+</script>
