@@ -38,11 +38,13 @@ namespace Business.SystemBusiness
                 {
                     return null;
                 }
+                
                 UserModel model = Mapper.Map<UserModel>(user);
                 model.UserRole = new List<RoleModel>();
                 var roleList = new RoleData().GetUserRole(dp, userId);
                 if (roleList != null && roleList.Count > 0)
                 {
+                    Mapper.Initialize(m => m.CreateMap<System_Role, RoleModel>());
                     foreach (var m in roleList)
                     {
                         model.UserRole.Add(Mapper.Map<RoleModel>(m));

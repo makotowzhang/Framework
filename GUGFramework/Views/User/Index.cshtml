@@ -48,34 +48,38 @@
                       style="width: 100%;margin-top:20px;"
                       element-loading-text="拼命加载中"
                       element-loading-spinner="el-icon-loading"
-                      element-loading-background="rgba(50, 50,50, 0.8)"
+                      element-loading-background="rgba(200, 200,200, 0.5)"
                       v-loading="Loading.tableLoading">
-                <el-table-column type="selection"
-                                 width="50">
-                </el-table-column>
-                <el-table-column prop="UserName"
-                                 label="用户名"
-                                 width="180">
-                </el-table-column>
-                <el-table-column prop="TrueName"
-                                 label="姓名"
-                                 width="180">
-                </el-table-column>
-                <el-table-column prop="IsEnabled"
-                                 label="是否启用">
-                    <template slot-scope="scope">
-                        {{ scope.row.IsEnabled?"是":"否" }}
-                    </template>
-                </el-table-column>
+                    <el-table-column type="index"  
+                                     :index="showIdex"
+                                     label=" ">
+                    </el-table-column>
+                    <el-table-column type="selection"
+                                     width="50">
+                    </el-table-column>
+                    <el-table-column prop="UserName"
+                                     label="用户名"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="TrueName"
+                                     label="姓名"
+                                     width="180">
+                    </el-table-column>
+                    <el-table-column prop="IsEnabled"
+                                     label="是否启用">
+                        <template slot-scope="scope">
+                            {{ scope.row.IsEnabled?"是":"否" }}
+                        </template>
+                    </el-table-column>
             </el-table>
             <div ref="Pagination">
                 <el-pagination @@size-change="handleSizeChange"
                                @@current-change="handleCurrentChange"
-                               :current-page="4"
-                               :page-sizes="[100, 200, 300, 400]"
-                               :page-size="100"
+                               :current-page="QueryFormData.Page"
+                               :page-size="QueryFormData.PageSize"
+                               :page-sizes="PaginationData.pageSizes"
                                layout="total, sizes, prev, pager, next, jumper"
-                               :total="400"
+                               :total="PaginationData.total"
                                style="width:100%;padding-left:20px;box-sizing:border-box">
                 </el-pagination>
             </div>
@@ -156,7 +160,9 @@
         el: "#App",
         data: {
             QueryFormData: {
-                UserName: ""
+                UserName: "",
+                Page: 1,
+                PageSize: 10,
             },
             tableData: [
                 { UserName: "admin", TrueName: "管理员", IsEnabled: true },
@@ -219,10 +225,18 @@
             Loading: {
                 bodyLoading: false,
                 tableLoading: false
+            },
+            PaginationData: {
+                pageSizes: [10, 20, 50, 100],
+                total:2
             }
         },
         methods: {
             onQuery: function () {
+                getList();
+            },
+            showIdex: function (index) {
+                return (this.QueryFormData.Page - 1) * this.QueryFormData.PageSize + 1 + index; 
             },
             resetQueryForm: function () {
                 this.$refs.QueryForm.resetFields();
@@ -317,6 +331,23 @@
         }
 
     });
+
+    function getList() {
+        $vue.Loading.tableLoading = true;
+        axios.post("GetUserList", $vue.QueryFormData).then(function (response) {
+            $vue.Loading.tableLoading = false;
+            $vue.tableData = response.data.List;
+            $vue.PaginationData.total = response.data.Total;
+        }).catch(function (error) {
+            $vue.Loading.tableLoading=false;
+            $vue.tableData = [];
+            $vue.PaginationData.total = 0;
+            $vue.$message({
+                type: 'error',
+                message: '服务器出错'
+            });
+        });
+    }
     window.onresize = function () {
         $vue.tableHeight = $vue.$refs.App.getBoundingClientRect().height -
             $vue.$refs.QueryFormDiv.getBoundingClientRect().height -

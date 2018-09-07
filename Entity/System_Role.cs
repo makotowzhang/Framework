@@ -19,7 +19,7 @@ namespace Entity
         public string RoleDesc { get; set; }
         public Nullable<int> Sort { get; set; }
         public Nullable<bool> IsEnabled { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public Nullable<bool> IsDel { get; set; }
         public Nullable<System.Guid> CreateUser { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }
         public Nullable<System.Guid> UpdateUser { get; set; }

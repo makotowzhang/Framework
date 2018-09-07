@@ -45,7 +45,9 @@
     <Compile Include="SystemModel\JsonMessage.cs" />
     <Compile Include="SystemModel\LoginModel.cs" />
     <Compile Include="SystemModel\MenuModel.cs" />
+    <Compile Include="SystemModel\PageModel.cs" />
     <Compile Include="SystemModel\RoleModel.cs" />
+    <Compile Include="SystemModel\TableDataModel.cs" />
     <Compile Include="SystemModel\UserModel.cs" />
   </ItemGroup>
   <ItemGroup>
