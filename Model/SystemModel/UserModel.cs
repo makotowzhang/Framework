@@ -12,10 +12,10 @@ namespace Model.SystemModel
         public bool? IsEnabled { get; set; } = true;
         public bool? IsDel { get; set; } = false;
         public List<RoleModel> UserRole { get; set; }
-        public List<Guid> AddRoleId { get; set; }
-        public string CreateUser { get; set; }
+        public List<Guid> RoleId { get; set; }
+        public Guid? CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
-        public string UpdateUser { get; set; }
+        public Guid? UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
     }
 

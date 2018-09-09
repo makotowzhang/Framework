@@ -47,7 +47,7 @@ namespace Data.SystemData
 
         public List<System_User> GetUserList(DataProvider dp, UserFilter filter,out int total,bool IsPage=true)
         {
-            var temp = dp.System_User.Where(m => true);
+            var temp = dp.System_User.Where(m => m.IsDel==false);
             if (!string.IsNullOrWhiteSpace(filter.UserName))
             {
                 temp = temp.Where(m => m.UserName.Contains(filter.UserName));

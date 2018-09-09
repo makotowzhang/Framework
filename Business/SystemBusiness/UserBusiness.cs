@@ -14,6 +14,31 @@ namespace Business.SystemBusiness
     {
         UserData data = new UserData();
 
+        public UserModel GetUserModel(Guid userId)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                System_User entity = data.GetUserById(dp, userId);
+                if (entity == null)
+                {
+                    return null;
+                }
+                UserModel model = Mapper.Map<UserModel>(entity);
+                List<System_Role> roleList = new RoleData().GetUserRole(dp, userId);
+                model.RoleId = new List<Guid>();
+                model.UserRole = new List<RoleModel>();
+                if (roleList != null && roleList.Count > 0)
+                {
+                    foreach (var m in roleList)
+                    {
+                        model.RoleId.Add(m.Id);
+                        model.UserRole.Add(Mapper.Map<RoleModel>(m));
+                    }
+                }
+                return model;
+            }
+        }
+
         public List<UserModel> GetUserList(UserFilter filter,out int total, bool IsPage = true)
         {
             using (DataProvider dp = new DataProvider())
@@ -27,10 +52,7 @@ namespace Business.SystemBusiness
                     List<System_Role> roleList = roleData.GetUserRole(dp, m.Id);
                     if (roleList != null && roleList.Count > 0)
                     {
-                        foreach (var role in roleList)
-                        {
-                            model.UserRole.Add(Mapper.Map<RoleModel>(m));
-                        }
+                        model.UserRole = Mapper.Map<List<RoleModel>>(roleList);
                     }
                     list.Add(model);
                 }
@@ -38,29 +60,33 @@ namespace Business.SystemBusiness
             }
         }
 
-        public bool AddUser(UserModel model, Guid userId)
+        public bool AddUser(UserModel model)
         {
+            
             System_User entity = Mapper.Map<System_User>(model);
             entity.Id = Guid.NewGuid();
             entity.IsDel = false;
-            entity.CreateUser = userId;
             entity.CreateTime = DateTime.Now;
             List<System_UserRole> userRoleList = new List<System_UserRole>();
-            if (model.AddRoleId != null && model.AddRoleId.Count > 0)
+            if (model.RoleId != null && model.RoleId.Count > 0)
             {
-                foreach (var m in model.AddRoleId)
+                foreach (var m in model.RoleId)
                 {
                     userRoleList.Add(new System_UserRole()
                     {
                         UserId = entity.Id,
                         RoleId = m,
-                        CreateUser = userId,
+                        CreateUser = entity.CreateUser,
                         CreateTime = DateTime.Now
                     });
                 }
             }
             using (DataProvider dp = new DataProvider())
             {
+                if (data.GetUserNameCount(dp, model, false) > 0)
+                {
+                    return false;
+                }
                 data.AddUser(dp,entity);
                 if (userRoleList.Count > 0)
                 {
@@ -78,29 +104,33 @@ namespace Business.SystemBusiness
             }
         }
 
-        public bool EditUser(UserModel model, Guid userId)
+        public bool EditUser(UserModel model)
         {
             List<System_UserRole> userRoleList = new List<System_UserRole>();
-            if (model.AddRoleId != null && model.AddRoleId.Count > 0)
+            if (model.RoleId != null && model.RoleId.Count > 0)
             {
-                foreach (var m in model.AddRoleId)
+                foreach (var m in model.RoleId)
                 {
                     userRoleList.Add(new System_UserRole()
                     {
                         UserId = model.Id,
                         RoleId = m,
-                        CreateUser = userId,
+                        CreateUser = model.UpdateUser,
                         CreateTime = DateTime.Now
                     });
                 }
             }
             using (DataProvider dp = new DataProvider())
             {
+                if (data.GetUserNameCount(dp, model, true) > 0)
+                {
+                    return false;
+                }
                 System_User entity = data.GetUserById(dp, model.Id);
                 entity.UserName = model.UserName;
                 entity.TrueName = model.TrueName;
                 entity.IsEnabled = model.IsEnabled;
-                entity.UpdateUser = userId;
+                entity.UpdateUser = model.Id;
                 entity.UpdateTime = DateTime.Now;
                 data.DeleteUserRole(dp, model.Id);
                 if (userRoleList.Count > 0)
@@ -124,6 +154,26 @@ namespace Business.SystemBusiness
             using (DataProvider dp = new DataProvider())
             {
                 return data.GetUserNameCount(dp, model, isUpdate) > 0;
+            }
+        }
+
+        public bool DeleteUser(List<UserModel> model)
+        {
+            if (model == null || model.Count == 0)
+            {
+                return false;
+            }
+            using (DataProvider dp = new DataProvider())
+            {
+                foreach (UserModel m in model)
+                {
+                    System_User entity = data.GetUserById(dp, m.Id);
+                    entity.IsDel = true;
+                    entity.UpdateUser = m.UpdateUser;
+                    entity.UpdateTime = DateTime.Now;
+                }
+                dp.SaveChanges();
+                return true;
             }
         }
     }

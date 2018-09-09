@@ -116,7 +116,7 @@
                     else {
                         $vue.$message({
                             showClose: true,
-                            message: '用户名密码错误',
+                            message: response.data.msg,
                             type: 'warning'
                         })
                     }

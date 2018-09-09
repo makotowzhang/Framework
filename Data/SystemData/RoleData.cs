@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Entity;
+using Model.SystemModel;
 
 namespace Data.SystemData
 {
@@ -22,6 +23,25 @@ namespace Data.SystemData
         public List<System_Role> GetUserRole(DataProvider dp,Guid userId)
         {
             return dp.System_Role.Where(m => dp.System_UserRole.Where(x => x.UserId == userId).Select(x =>(Guid)x.RoleId).Contains(m.Id)).ToList();
+        }
+
+        public List<System_Role> GetRoleList(DataProvider dp, RoleFilter filter, out int total, bool IsPage = true)
+        {
+            var temp = dp.System_Role.Where(m => m.IsEnabled==true&&m.IsDel==false);
+            if (!string.IsNullOrWhiteSpace(filter.RoleName))
+            {
+                temp = temp.Where(m => m.RoleName.Contains(filter.RoleName));
+            }
+            temp = temp.OrderBy(m => m.CreateTime);
+            total = temp.Count();
+            if (IsPage)
+            {
+                return temp.Skip(filter.Skip).Take(filter.PageSize).ToList();
+            }
+            else
+            {
+                return temp.ToList();
+            }
         }
     }
 }

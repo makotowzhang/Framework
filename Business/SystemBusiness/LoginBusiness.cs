@@ -13,7 +13,7 @@ namespace Business.SystemBusiness
     public class LoginBusiness
     {
         LoginData data = new LoginData();
-        public Guid? CheckUser(LoginModel model )
+        public UserModel CheckUser(LoginModel model )
         {
             using (DataProvider dp = new DataProvider())
             {
@@ -24,7 +24,7 @@ namespace Business.SystemBusiness
                 }
                 else
                 {
-                    return user[0].Id;
+                    return Mapper.Map<UserModel>(user[0]);
                 }
             }
         }
@@ -44,11 +44,7 @@ namespace Business.SystemBusiness
                 var roleList = new RoleData().GetUserRole(dp, userId);
                 if (roleList != null && roleList.Count > 0)
                 {
-                    Mapper.Initialize(m => m.CreateMap<System_Role, RoleModel>());
-                    foreach (var m in roleList)
-                    {
-                        model.UserRole.Add(Mapper.Map<RoleModel>(m));
-                    }
+                    model.UserRole = Mapper.Map<List<RoleModel>>(roleList);
                 }
                 return model;
             }

@@ -18,7 +18,7 @@ namespace Model.SystemModel
 
         public string msg { get { return Message; } }
 
-        public JsonMessage(bool success,string message)
+        public JsonMessage(bool success,string message="")
         {
             Success = success;
             Message = message;

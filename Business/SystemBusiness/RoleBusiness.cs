@@ -13,12 +13,11 @@ namespace Business.SystemBusiness
     public class RoleBusiness
     {
         RoleData data = new RoleData();
-        public bool AddRole(RoleModel model,Guid userId)
+        public bool AddRole(RoleModel model)
         {
             System_Role entity = Mapper.Map<System_Role>(model);
             entity.Id = Guid.NewGuid();
             entity.IsDel = false;
-            entity.CreateUser = userId;
             entity.CreateTime = DateTime.Now;
             using (DataProvider dp = new DataProvider())
             {
@@ -27,7 +26,7 @@ namespace Business.SystemBusiness
             }
         }
 
-        public bool UpdateRole(RoleModel model, Guid userId)
+        public bool UpdateRole(RoleModel model)
         {
             using (DataProvider dp = new DataProvider())
             {
@@ -40,9 +39,28 @@ namespace Business.SystemBusiness
                 entity.RoleDesc = model.RoleDesc;
                 entity.Sort = model.Sort;
                 entity.IsEnabled = model.IsEnabled;
-                entity.UpdateUser = userId;
+                entity.UpdateUser = model.UpdateUser;
                 entity.UpdateTime = DateTime.Now;
                 return dp.SaveChanges() == 1;
+            }
+        }
+
+        public List<RoleModel> GetRoleList(RoleFilter filter,out int total)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                List<RoleModel> list = Mapper.Map<List<RoleModel>>(data.GetRoleList(dp, filter, out total));
+                return list;
+            }
+        }
+
+        public List<RoleModel> GetAllRole(RoleFilter filter)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                int total;
+                List<RoleModel> list = Mapper.Map<List<RoleModel>>(data.GetRoleList(dp, filter, out total,false));
+                return list;
             }
         }
     }

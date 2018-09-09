@@ -20,15 +20,22 @@ namespace GUGFramework.Controllers
 
         public ActionResult SignIn(LoginModel model)
         {
-            Guid? userId = business.CheckUser(model);
-            if (userId!=null)
+            UserModel user = business.CheckUser(model);
+            if (user != null)
             {
-                FormsAuthentication.SetAuthCookie(userId.ToString(), false);
-                return Json(new JsonMessage(true, ""));
+                if (user.IsEnabled == true)
+                {
+                    FormsAuthentication.SetAuthCookie(user.Id.ToString(), false);
+                    return Json(new JsonMessage(true, "登录成功！"));
+                }
+                else
+                {
+                    return Json(new JsonMessage(false, "账号被禁用，请联系管理员！"));
+                }
             }
             else
             {
-                return Json(new JsonMessage(false, ""));
+                return Json(new JsonMessage(false, "用户名或密码错误！"));
             }
            
         }

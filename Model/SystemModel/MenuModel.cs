@@ -13,9 +13,9 @@ namespace Model.SystemModel
         public string MenuName { get; set; }
         public string MenuUrl { get; set; }
         public Guid? ParentId { get; set; }
-        public string CreateUser { get; set; }
+        public Guid? CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
-        public string UpdateUser { get; set; }
+        public Guid? UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
     }
 }

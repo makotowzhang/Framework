@@ -30,3 +30,6 @@ body {
     padding-bottom: 0;
     box-sizing: border-box;
 }
+.el-loading-mask {
+    z-index: 4999;
+}

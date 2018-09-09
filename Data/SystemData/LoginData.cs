@@ -16,7 +16,7 @@ namespace Data.SystemData
             string md5Password = MD5Encrypt.MD5Encrypt64(model.Password);
             return dp.System_User.Where(m => m.UserName == model.UserName
                                         && m.Password == md5Password
-                                        && m.IsDel == false && m.IsEnabled == true).ToList();
+                                        && m.IsDel == false ).ToList();
         }
     }
 }
