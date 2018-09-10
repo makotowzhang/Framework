@@ -12,10 +12,18 @@ namespace Model.SystemModel
         public Guid Id { get; set; }
         public string MenuName { get; set; }
         public string MenuUrl { get; set; }
+        public string MenuType { get; set; }
+        public string ActionCode { get; set; }
+        public string IconClass { get; set; }
         public Guid? ParentId { get; set; }
+        public int? Sort { get; set; }
+        public bool? IsEnable { get; set; }
+        public bool? IsDel { get; set; }
         public Guid? CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
         public Guid? UpdateUser { get; set; }
         public DateTime? UpdateTime { get; set; }
+        public List<MenuModel> Children { get; set; }
     }
+
 }

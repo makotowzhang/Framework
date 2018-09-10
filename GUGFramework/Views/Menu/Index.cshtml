@@ -48,27 +48,48 @@
             <el-row class="Table_Button_Row">
                 <el-col :span="24">
                     <el-button type="primary" @@click="openAddDialog">新增</el-button>
-                    <el-button type="primary">编辑</el-button>
-                    <el-button type="danger">删除</el-button>
+                    <el-button type="primary" @@click="edit">编辑</el-button>
+                    <el-button type="danger" @@click="del">删除</el-button>
                 </el-col>
             </el-row>
             <el-row style="margin-top:10px;">
                 <el-col :span="24">
                     <el-tree style=""
-                             :data="MenuData" 
-                             :highlight-current="true" 
-                             :props="DefaultProps" 
-                             @@node-click="MenuClick" 
-                             > 
+                             :data="MenuData"
+                             :highlight-current="true"
+                             :props="DefaultProps"
+                             @@node-click="MenuClick">
+                        <span class="custom-tree-node" slot-scope="{ node, data }">
+                            <i class="el-icon-location"></i>
+                            <span>{{ node.label }}</span>
+                            <span>
+                                {{ node.id }}
+                            </span>
 
+
+                        </span>
                     </el-tree>
                 </el-col>
             </el-row>
         </div>
         <div id="DivRight">
+            <el-form ref="RootForm" :model="FormData.rootForm" v-if="FormStatus.rootForm" label-width="80px">
+                <el-form-item label="Root">
 
+                </el-form-item>
+            </el-form>
+            <el-form ref="NavForm" :model="FormData.navForm" v-if="FormStatus.navForm" label-width="80px">
+                <el-form-item label="Nav">
+
+                </el-form-item>
+            </el-form>
+            <el-form ref="ActionForm" :model="FormData.actionForm" v-if="FormStatus.actionForm" label-width="80px">
+                <el-form-item label="Action">
+
+                </el-form-item>
+            </el-form>
         </div>
-       
+
 
     </div>
 </body>
@@ -78,53 +99,80 @@
         el: "#App",
         data: {
             MenuData: [{
-                label: '一级 1',
-                id:1,
-                children: [{
-                    label: '二级 1-1',
-                    children: [{
-                        label: '三级 1-1-1'
+                MenuName: '一级 1',
+                id: 1,
+                Children: [{
+                    MenuName: '二级 1-1',
+                    Children: [{
+                        MenuName: '三级 1-1-1'
                     }]
                 }]
             }, {
-                label: '一级 2',
-                children: [{
-                    label: '二级 2-1',
+                MenuName: '一级 2',
+                Children: [{
+                    MenuName: '二级 2-1',
                     children: [{
-                        label: '三级 2-1-1'
+                        MenuName: '三级 2-1-1'
                     }]
                 }, {
-                    label: '二级 2-2',
-                    children: [{
-                        label: '三级 2-2-1'
+                    MenuName: '二级 2-2',
+                    Children: [{
+                        MenuName: '三级 2-2-1'
                     }]
                 }]
             }, {
-                label: '一级 3',
-                children: [{
-                    label: '二级 3-1',
-                    children: [{
-                        label: '三级 3-1-1'
+                MenuName: '一级 3',
+                Children: [{
+                    MenuName: '二级 3-1',
+                    Children: [{
+                        MenuName: '三级 3-1-1'
                     }]
                 }, {
-                    label: '二级 3-2',
-                    children: [{
-                        label: '三级 3-2-1'
+                    MenuName: '二级 3-2',
+                    Children: [{
+                        MenuName: '三级 3-2-1'
                     }]
                 }]
             }],
             DefaultProps: {
-                children: 'children',
-                label: 'label'
+                children: 'Children',
+                label: 'MenuName'
             },
-            SelectedMenu: {}
+            SelectedMenu: {},
+            FormData: {
+                rootForm: {},
+                navForm: {},
+                actionForm: {}
+            },
+            FormStatus: {
+                rootForm: true,
+                navForm: false,
+                actionForm: false
+            }
+            
         },
         methods: {
             MenuClick: function (menu) {
                 this.$message(this.SelectedMenu == menu?"true":"false");
                 this.SelectedMenu = menu;
                 console.log(menu);
+            },
+            openAddDialog: function() {
+                this.FormStatus.rootForm = false;
+                this.FormStatus.navForm = true;
+                this.FormStatus.actionForm = false;
+            },
+            edit: function () {
+                this.FormStatus.rootForm = false;
+                this.FormStatus.navForm = false;
+                this.FormStatus.actionForm = true;
+            },
+            del: function () {
+                this.FormStatus.rootForm = true;
+                this.FormStatus.navForm = false;
+                this.FormStatus.actionForm = false;
             }
         }
+        
     });
 </script>

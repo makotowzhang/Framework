@@ -65,6 +65,7 @@ namespace Business.SystemBusiness
             
             System_User entity = Mapper.Map<System_User>(model);
             entity.Id = Guid.NewGuid();
+            entity.Password = Common.MD5Encrypt.MD5Encrypt64("123456");
             entity.IsDel = false;
             entity.CreateTime = DateTime.Now;
             List<System_UserRole> userRoleList = new List<System_UserRole>();

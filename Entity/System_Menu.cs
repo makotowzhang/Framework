@@ -17,6 +17,9 @@ namespace Entity
         public System.Guid Id { get; set; }
         public string MenuName { get; set; }
         public string MenuUrl { get; set; }
+        public string MenuType { get; set; }
+        public string ActionCode { get; set; }
+        public string IconClass { get; set; }
         public Nullable<System.Guid> ParentId { get; set; }
         public Nullable<int> Sort { get; set; }
         public Nullable<bool> IsEnable { get; set; }

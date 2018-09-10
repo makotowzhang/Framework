@@ -12,6 +12,9 @@
           <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
           <Property Name="MenuName" Type="varchar" MaxLength="50" />
           <Property Name="MenuUrl" Type="varchar" MaxLength="200" />
+          <Property Name="MenuType" Type="varchar" MaxLength="50" />
+          <Property Name="ActionCode" Type="varchar" MaxLength="50" />
+          <Property Name="IconClass" Type="varchar" MaxLength="100" />
           <Property Name="ParentId" Type="uniqueidentifier" />
           <Property Name="Sort" Type="int" />
           <Property Name="IsEnable" Type="bit" />
@@ -74,27 +77,11 @@
     <edmx:ConceptualModels>
       <Schema Namespace="Entity" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="DataProvider" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="System_Menu" EntityType="Entity.System_Menu" />
           <EntitySet Name="System_User" EntityType="Entity.System_User" />
           <EntitySet Name="System_Role" EntityType="Entity.System_Role" />
           <EntitySet Name="System_UserRole" EntityType="Entity.System_UserRole" />
+          <EntitySet Name="System_Menu" EntityType="Entity.System_Menu" />
         </EntityContainer>
-        <EntityType Name="System_Menu">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="MenuName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="MenuUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
-          <Property Name="ParentId" Type="Guid" />
-          <Property Name="Sort" Type="Int32" />
-          <Property Name="IsEnable" Type="Boolean" />
-          <Property Name="IsDel" Type="Boolean" />
-          <Property Name="CreateUser" Type="Guid" />
-          <Property Name="CreateTime" Type="DateTime" Precision="3" />
-          <Property Name="UpdateUser" Type="Guid" />
-          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
-        </EntityType>
         <EntityType Name="System_User">
           <Key>
             <PropertyRef Name="Id" />
@@ -137,29 +124,31 @@
           <Property Name="UpdateUser" Type="Guid" />
           <Property Name="UpdateTime" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="System_Menu">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="MenuName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MenuUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="MenuType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ActionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IconClass" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="Sort" Type="Int32" />
+          <Property Name="IsEnable" Type="Boolean" />
+          <Property Name="IsDel" Type="Boolean" />
+          <Property Name="CreateUser" Type="Guid" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="UpdateUser" Type="Guid" />
+          <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="FrameworkModelStoreContainer" CdmEntityContainer="DataProvider">
-          <EntitySetMapping Name="System_Menu">
-            <EntityTypeMapping TypeName="Entity.System_Menu">
-              <MappingFragment StoreEntitySet="System_Menu">
-                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
-                <ScalarProperty Name="UpdateUser" ColumnName="UpdateUser" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
-                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
-                <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
-                <ScalarProperty Name="Sort" ColumnName="Sort" />
-                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="MenuUrl" ColumnName="MenuUrl" />
-                <ScalarProperty Name="MenuName" ColumnName="MenuName" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="System_User">
             <EntityTypeMapping TypeName="Entity.System_User">
               <MappingFragment StoreEntitySet="System_User">
@@ -201,6 +190,26 @@
                 <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="System_Menu">
+            <EntityTypeMapping TypeName="Entity.System_Menu">
+              <MappingFragment StoreEntitySet="System_Menu">
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="UpdateUser" ColumnName="UpdateUser" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="IconClass" ColumnName="IconClass" />
+                <ScalarProperty Name="ActionCode" ColumnName="ActionCode" />
+                <ScalarProperty Name="MenuType" ColumnName="MenuType" />
+                <ScalarProperty Name="MenuUrl" ColumnName="MenuUrl" />
+                <ScalarProperty Name="MenuName" ColumnName="MenuName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

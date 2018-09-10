@@ -25,9 +25,9 @@ namespace Entity
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<System_Menu> System_Menu { get; set; }
         public virtual DbSet<System_User> System_User { get; set; }
         public virtual DbSet<System_Role> System_Role { get; set; }
         public virtual DbSet<System_UserRole> System_UserRole { get; set; }
+        public virtual DbSet<System_Menu> System_Menu { get; set; }
     }
 }
