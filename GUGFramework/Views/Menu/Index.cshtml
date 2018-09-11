@@ -55,6 +55,7 @@
             margin-left: 15px;
             margin-top: 15px;
             display:inline-block;
+            cursor:pointer;
         }
     </style>
 </head>
@@ -65,8 +66,8 @@
                 <el-row class="Table_Button_Row">
                     <el-col :span="24">
                         <el-button type="primary">新增</el-button>
-                        <el-button type="primary" @@click="edit">编辑</el-button>
-                        <el-button type="danger" @@click="del">删除</el-button>
+                        <el-button type="primary" >编辑</el-button>
+                        <el-button type="danger" >删除</el-button>
                     </el-col>
                 </el-row>
                 <el-row style="margin-top:10px;">
@@ -92,9 +93,9 @@
                     <el-tag type="success">新增</el-tag>
                     <el-form-item label="菜单类型" prop="MenuType">
                         <el-radio-group v-model="AddFormData.MenuType" @@change="addMenuTypeChange">
-                            <el-radio label="Root" border>根节点</el-radio>
-                            <el-radio label="Router" border>路由</el-radio>
-                            <el-radio label="Action" border>动作</el-radio>
+                            <el-radio label="Root"  :disabled="MenuTypeDisabled.Root"  border>根节点</el-radio>
+                            <el-radio label="Router" :disabled="MenuTypeDisabled.Router" border>路由</el-radio>
+                            <el-radio label="Action":disabled="MenuTypeDisabled.Action" border>动作</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="菜单名称" prop="MenuName">
@@ -219,31 +220,23 @@
                     { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
                 ]
             },
-            FormData: {
-                rootForm: {},
-                navForm: {},
-                actionForm: {}
-            },
-            FormStatus: {
-                rootForm: true,
-                navForm: false,
-                actionForm: false
-            },
             Dialog: {
                 iconDialog: false
+            },
+            MenuTypeDisabled: {
+                Root: true,
+                Router: false,
+                Action: false
             },
             Iconfont: []
         },
         methods: {
             MenuClick: function (menu) {
-                this.$message(this.SelectedMenu == menu?"true":"false");
                 this.SelectedMenu = menu;
-                console.log(menu);
             },
             addFormSubmit: function () {
                 this.$refs.AddForm.validate(function (result, obj) {
-                    console.log(result);
-                    console.log(obj);
+
                 });
             },
             IconDialogSure: function () {
@@ -255,16 +248,6 @@
                 }
                 this.AddFormData.IconClass = selectIcon[0].ClassName;
                 this.Dialog.iconDialog = false;
-            },
-            edit: function () {
-                this.FormStatus.rootForm = false;
-                this.FormStatus.navForm = false;
-                this.FormStatus.actionForm = true;
-            },
-            del: function () {
-                this.FormStatus.rootForm = true;
-                this.FormStatus.navForm = false;
-                this.FormStatus.actionForm = false;
             },
             iconClick: function (icon, iconList) {
                 iconList.filter(function (v, i) {
@@ -280,9 +263,16 @@
                 this.AddFormData.ActionCode = "";
                 this.AddFormData.ActionDesc = "";
                 this.AddFormData.IconClass = "";
-                this.AddFormData.ParentId = "";
                 this.AddFormData.Sort = 0;
-                setTimeout(function () { $vue.$refs.AddForm.clearValidate() }, 0);
+                setTimeout(function () {
+                    $vue.$refs.AddForm.clearValidate();
+                    $vue.Iconfont.filter(function (v, i) {
+                        return v.IconColor == "red";
+                    }).forEach(function (v, i) {
+                        Vue.set(v, "IconColor", null);
+                    });
+                }, 0);
+               
             }
         }
 
