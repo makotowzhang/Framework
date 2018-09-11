@@ -9,88 +9,137 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>菜单管理</title>
-    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
     <script src="~/Scripts/Vue/vue.js"></script>
     <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
     <script src="~/Scripts/ElementUI/index.js"></script>
     <script src="~/Scripts/Axios/axios.min.js"></script>
+    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
+    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
+    <link href="~/Content/iconfont/iconfont.css" rel="stylesheet" />
     <style>
 
         #App {
-            height:100%;
+            height: 100%;
         }
+
         #DivLeft {
             float: left;
             height: 100%;
-            width:300px;
-          
+            width: 30%;
         }
+
         #DivRight {
+            padding: 20px;
+            box-sizing: border-box;
             float: left;
-            width: calc(100% - 300px);
-            height:100%;
+            width: 70%;
+            height: 100%;
+            border-left: 2px solid #E4E7ED;
         }
+
         .el-tree--highlight-current .el-tree-node.is-current > .el-tree-node__content {
-            background-color:deepskyblue;
+            background-color: deepskyblue;
         }
+
         .el-tree-node__label {
             font-size: 16px;
         }
+
         .el-tree-node__content {
-            padding-top:3px;
-            padding-bottom:3px;
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        .MenuIcon {
+            font-size: 28px;
+            margin-left: 15px;
+            margin-top: 15px;
+            display:inline-block;
         }
     </style>
 </head>
 <body>
     <div id="App">
-        <div id="DivLeft">
-            <el-row class="Table_Button_Row">
-                <el-col :span="24">
-                    <el-button type="primary" @@click="openAddDialog">新增</el-button>
-                    <el-button type="primary" @@click="edit">编辑</el-button>
-                    <el-button type="danger" @@click="del">删除</el-button>
-                </el-col>
-            </el-row>
-            <el-row style="margin-top:10px;">
-                <el-col :span="24">
-                    <el-tree style=""
-                             :data="MenuData"
-                             :highlight-current="true"
-                             :props="DefaultProps"
-                             @@node-click="MenuClick">
-                        <span class="custom-tree-node" slot-scope="{ node, data }">
-                            <i class="el-icon-location"></i>
-                            <span>{{ node.label }}</span>
-                            <span>
-                                {{ node.id }}
+        <template>
+            <div id="DivLeft">
+                <el-row class="Table_Button_Row">
+                    <el-col :span="24">
+                        <el-button type="primary">新增</el-button>
+                        <el-button type="primary" @@click="edit">编辑</el-button>
+                        <el-button type="danger" @@click="del">删除</el-button>
+                    </el-col>
+                </el-row>
+                <el-row style="margin-top:10px;">
+                    <el-col :span="24">
+                        <el-tree style=""
+                                 :data="MenuData"
+                                 :highlight-current="true"
+                                 :props="DefaultProps"
+                                 @@node-click="MenuClick">
+                            <span class="custom-tree-node" slot-scope="{ node, data }">
+                                <i class="el-icon-location"></i>
+                                <span>{{ node.label }}</span>
+                                <span>
+                                    {{ node.id }}
+                                </span>
                             </span>
+                        </el-tree>
+                    </el-col>
+                </el-row>
+            </div>
+            <div id="DivRight">
+                <el-form ref="AddForm" :rules="AddFormRule" :model="AddFormData" label-width="80px">
+                    <el-tag type="success">新增</el-tag>
+                    <el-form-item label="菜单类型" prop="MenuType">
+                        <el-radio-group v-model="AddFormData.MenuType" @@change="addMenuTypeChange">
+                            <el-radio label="Root" border>根节点</el-radio>
+                            <el-radio label="Router" border>路由</el-radio>
+                            <el-radio label="Action" border>动作</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                    <el-form-item label="菜单名称" prop="MenuName">
+                        <el-input v-model="AddFormData.MenuName" placeholder="请输入菜单名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="菜单地址" prop="MenuUrl" v-if="AddFormData.MenuType=='Router'">
+                        <el-input v-model="AddFormData.MenuUrl" placeholder="请输入菜单地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="动作编码" prop="ActionCode" v-if="AddFormData.MenuType=='Action'">
+                        <el-input v-model="AddFormData.ActionCode" placeholder="请输入动作编码"></el-input>
+                    </el-form-item>
+                    <el-form-item label="动作描述" prop="ActionDesc" v-if="AddFormData.MenuType=='Action'">
+                        <el-input v-model="AddFormData.ActionDesc" placeholder="请输入动作描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="图标" prop="IconClass" v-if="AddFormData.MenuType!='Action'">
+                        <el-input v-model="AddFormData.IconClass" readonly>  <el-button slot="append" @@click="Dialog.iconDialog=true" icon="el-icon-search"></el-button></el-input>
+                    </el-form-item>
+                    <el-form-item label="排序" prop="Sort">
+                        <el-input-number v-model="AddFormData.Sort"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="是否启用" prop="IsEnabled">
+                        <el-switch v-model="AddFormData.IsEnabled"
+                                   active-color="#13ce66"
+                                   inactive-color="#ff4949">
+                        </el-switch>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @@click="addFormSubmit">保 存</el-button>
+                        <el-button type="warning" @@click="$refs.AddForm.resetFields()">重 置</el-button>
+                    </el-form-item>
+         
+            </div>
+            <el-dialog title="选择图标"
+                       :visible.sync="Dialog.iconDialog"
+                       width="50%">
+                <div style="max-height:200px;overflow-y:auto;overflow-x:hidden"  >
+                    <i v-for="icon in Iconfont" :class="'MenuIcon '+icon.ClassName" :style="{color:icon.IconColor}" @@click="iconClick(icon,Iconfont)"></i>
+                </div>
+                <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @@click="IconDialogSure">确 定</el-button>
+                    <el-button @@click="Dialog.iconDialog=false">取 消</el-button>
+                </span>
+            </el-dialog>
 
-
-                        </span>
-                    </el-tree>
-                </el-col>
-            </el-row>
-        </div>
-        <div id="DivRight">
-            <el-form ref="RootForm" :model="FormData.rootForm" v-if="FormStatus.rootForm" label-width="80px">
-                <el-form-item label="Root">
-
-                </el-form-item>
-            </el-form>
-            <el-form ref="NavForm" :model="FormData.navForm" v-if="FormStatus.navForm" label-width="80px">
-                <el-form-item label="Nav">
-
-                </el-form-item>
-            </el-form>
-            <el-form ref="ActionForm" :model="FormData.actionForm" v-if="FormStatus.actionForm" label-width="80px">
-                <el-form-item label="Action">
-
-                </el-form-item>
-            </el-form>
-        </div>
-
-
+        </template>
     </div>
 </body>
 </html>
@@ -139,6 +188,37 @@
                 label: 'MenuName'
             },
             SelectedMenu: {},
+            AddFormData: {
+                MenuName:"",
+                MenuType: "Root",
+                MenuUrl: "",
+                ActionCode: "",
+                ActionDesc: "",
+                IconClass: "",
+                ParentId: "",
+                Sort: 0,
+                IsEnabled:true,
+            },
+            AddFormRule: {
+                MenuName: [
+                    { required: true, message: '请输入菜单名称', trigger: 'change' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ],
+                MenuType: [
+                    { required: true, message: '请选择菜单类型', trigger: 'change' }
+                ],
+                MenuUrl: [
+                    { required: true, message: '请输入菜单路径', trigger: 'change' },
+                    { max: 100, message: '长度不能超过100个字符', trigger: 'change' }
+                ],
+                ActionCode: [
+                    { required: true, message: '请输入动作编码', trigger: 'change' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ],
+                ActionDesc: [
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ]
+            },
             FormData: {
                 rootForm: {},
                 navForm: {},
@@ -148,8 +228,11 @@
                 rootForm: true,
                 navForm: false,
                 actionForm: false
-            }
-            
+            },
+            Dialog: {
+                iconDialog: false
+            },
+            Iconfont: []
         },
         methods: {
             MenuClick: function (menu) {
@@ -157,10 +240,21 @@
                 this.SelectedMenu = menu;
                 console.log(menu);
             },
-            openAddDialog: function() {
-                this.FormStatus.rootForm = false;
-                this.FormStatus.navForm = true;
-                this.FormStatus.actionForm = false;
+            addFormSubmit: function () {
+                this.$refs.AddForm.validate(function (result, obj) {
+                    console.log(result);
+                    console.log(obj);
+                });
+            },
+            IconDialogSure: function () {
+                var selectIcon = this.Iconfont.filter(function (v, i) {
+                    return v.IconColor == "red";
+                });
+                if (selectIcon.length != 1) {
+                    return;
+                }
+                this.AddFormData.IconClass = selectIcon[0].ClassName;
+                this.Dialog.iconDialog = false;
             },
             edit: function () {
                 this.FormStatus.rootForm = false;
@@ -171,8 +265,29 @@
                 this.FormStatus.rootForm = true;
                 this.FormStatus.navForm = false;
                 this.FormStatus.actionForm = false;
+            },
+            iconClick: function (icon, iconList) {
+                iconList.filter(function (v, i) {
+                    return v.IconColor == "red";
+                }).forEach(function (v, i) {
+                    v.IconColor = null;
+                })
+                Vue.set(icon, "IconColor", "red");
+            },
+            addMenuTypeChange: function (v) {
+                this.AddFormData.MenuName = "";
+                this.AddFormData.MenuUrl = "";
+                this.AddFormData.ActionCode = "";
+                this.AddFormData.ActionDesc = "";
+                this.AddFormData.IconClass = "";
+                this.AddFormData.ParentId = "";
+                this.AddFormData.Sort = 0;
+                setTimeout(function () { $vue.$refs.AddForm.clearValidate() }, 0);
             }
         }
-        
+
     });
+    axios.get("/fonts/Iconfont.json", {}).then(function (response) {
+        $vue.Iconfont = response.data;
+    })
 </script>

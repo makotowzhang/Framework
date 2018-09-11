@@ -19,10 +19,11 @@ namespace Entity
         public string MenuUrl { get; set; }
         public string MenuType { get; set; }
         public string ActionCode { get; set; }
+        public string ActionDesc { get; set; }
         public string IconClass { get; set; }
         public Nullable<System.Guid> ParentId { get; set; }
         public Nullable<int> Sort { get; set; }
-        public Nullable<bool> IsEnable { get; set; }
+        public Nullable<bool> IsEnabled { get; set; }
         public Nullable<bool> IsDel { get; set; }
         public Nullable<System.Guid> CreateUser { get; set; }
         public Nullable<System.DateTime> CreateTime { get; set; }

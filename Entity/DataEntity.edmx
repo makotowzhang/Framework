@@ -14,10 +14,11 @@
           <Property Name="MenuUrl" Type="varchar" MaxLength="200" />
           <Property Name="MenuType" Type="varchar" MaxLength="50" />
           <Property Name="ActionCode" Type="varchar" MaxLength="50" />
+          <Property Name="ActionDesc" Type="varchar" MaxLength="50" />
           <Property Name="IconClass" Type="varchar" MaxLength="100" />
           <Property Name="ParentId" Type="uniqueidentifier" />
           <Property Name="Sort" Type="int" />
-          <Property Name="IsEnable" Type="bit" />
+          <Property Name="IsEnabled" Type="bit" />
           <Property Name="IsDel" Type="bit" />
           <Property Name="CreateUser" Type="uniqueidentifier" />
           <Property Name="CreateTime" Type="datetime" />
@@ -133,10 +134,11 @@
           <Property Name="MenuUrl" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="MenuType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ActionCode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ActionDesc" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IconClass" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="ParentId" Type="Guid" />
           <Property Name="Sort" Type="Int32" />
-          <Property Name="IsEnable" Type="Boolean" />
+          <Property Name="IsEnabled" Type="Boolean" />
           <Property Name="IsDel" Type="Boolean" />
           <Property Name="CreateUser" Type="Guid" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
@@ -202,10 +204,11 @@
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
                 <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
                 <ScalarProperty Name="IsDel" ColumnName="IsDel" />
-                <ScalarProperty Name="IsEnable" ColumnName="IsEnable" />
+                <ScalarProperty Name="IsEnabled" ColumnName="IsEnabled" />
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
                 <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="IconClass" ColumnName="IconClass" />
+                <ScalarProperty Name="ActionDesc" ColumnName="ActionDesc" />
                 <ScalarProperty Name="ActionCode" ColumnName="ActionCode" />
                 <ScalarProperty Name="MenuType" ColumnName="MenuType" />
                 <ScalarProperty Name="MenuUrl" ColumnName="MenuUrl" />

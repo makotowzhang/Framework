@@ -14,10 +14,11 @@ namespace Model.SystemModel
         public string MenuUrl { get; set; }
         public string MenuType { get; set; }
         public string ActionCode { get; set; }
+        public string ActionDesc { get; set; }
         public string IconClass { get; set; }
         public Guid? ParentId { get; set; }
         public int? Sort { get; set; }
-        public bool? IsEnable { get; set; }
+        public bool? IsEnabled { get; set; }
         public bool? IsDel { get; set; }
         public Guid? CreateUser { get; set; }
         public DateTime? CreateTime { get; set; }
