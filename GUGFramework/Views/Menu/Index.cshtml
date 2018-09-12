@@ -77,7 +77,9 @@
                                  :data="MenuData"
                                  :highlight-current="true"
                                  :props="DefaultProps"
-                                 @@node-click="MenuClick">
+                                 node-key="Id"
+                                 @@node-click="MenuClick"
+                                 ref="MenuTree">
                             <span class="custom-tree-node" slot-scope="{ node, data }">
                                 <i :class="data.IconClass"></i>
                                 <span>{{ data.MenuName }}</span>
@@ -289,6 +291,7 @@
                 this.FormStatus.addForm = true;
                 this.MenuTypeDisabled.RadioGroup = false;
                 this.addFormTitle = "新增根节点";
+                setTimeout(function () { $vue.$refs.AddForm.clearValidate(); }, 0);
             },
             addMenu: function () {
                 if (this.SelectedMenu == null) {
@@ -336,10 +339,13 @@
                     })
                     return;
                 }
+                this.Loading.bodyLoading = true;
                 axios.post("GetMenu", { menuId: this.SelectedMenu.Id }).then(function (request) {
                     $vue.EditFormData = request.data;
                     $vue.FormStatus.addForm = false;
                     $vue.FormStatus.editForm = true;
+                    setTimeout(function () { $vue.$refs.EditForm.clearValidate(); }, 0);
+                    $vue.Loading.bodyLoading = false;
                 }).catch(function () {
                     $vue.$message({
                         showClose: true,
@@ -408,14 +414,12 @@
                                     message: '修改成功！',
                                     type: 'success'
                                 });
-                                $vue.SelectedMenu.Children.push(JSON.parse(JSON.stringify($vue.EditFormData))); 
                                 $vue.SelectedMenu.Sort = $vue.EditFormData.Sort;
                                 $vue.SelectedMenu.MenuName = $vue.EditFormData.MenuName;
                                 $vue.SelectedMenu.MenuUrl = $vue.EditFormData.MenuUrl;
                                 $vue.SelectedMenu.ActionCode = $vue.EditFormData.ActionCode;
                                 $vue.SelectedMenu.ActionDesc = $vue.EditFormData.ActionDesc;
-                                menuSort($vue.MenuData);
-                                Vue.set($vue.SelectedMenu, "IconClass", $vue.EditFormData.IconClass);
+                                $vue.SelectedMenu.IconClass = $vue.EditFormData.IconClass;
                             }
                             else {
                                 $vue.$message({
@@ -474,10 +478,13 @@
     axios.get("/fonts/Iconfont.json", {}).then(function (response) {
         $vue.Iconfont = response.data;
     })
-    axios.post("GetAllMenu").then(function (response) {
-        $vue.MenuData = response.data;
+    function getTree() {
+        axios.post("GetAllMenu").then(function (response) {
+            $vue.MenuData = response.data;
 
-    });
+        });
+    }
+    getTree();
     function setIocnDialog(className) {
         $vue.Iconfont.filter(function (v, i) {
             return v.IconColor == "red";
@@ -501,6 +508,7 @@
             menu.forEach(function (v) {
                 menuSort(v.Children);
             });
-        }
+        }   
     }
+   
 </script>
