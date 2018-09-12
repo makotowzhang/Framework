@@ -25,14 +25,14 @@
         #DivLeft {
             float: left;
             height: 100%;
-            width: 30%;
+            width: 40%;
         }
 
         #DivRight {
             padding: 20px;
             box-sizing: border-box;
             float: left;
-            width: 70%;
+            width: 60%;
             height: 100%;
             border-left: 2px solid #E4E7ED;
         }
@@ -54,20 +54,21 @@
             font-size: 28px;
             margin-left: 15px;
             margin-top: 15px;
-            display:inline-block;
-            cursor:pointer;
+            display: inline-block;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div id="App">
+    <div id="App" v-loading="Loading.bodyLoading">
         <template>
             <div id="DivLeft">
                 <el-row class="Table_Button_Row">
                     <el-col :span="24">
-                        <el-button type="primary">新增</el-button>
-                        <el-button type="primary" >编辑</el-button>
-                        <el-button type="danger" >删除</el-button>
+                        <el-button type="primary" @@click="addRoot">新增根节点</el-button>
+                        <el-button type="primary" @@click="addMenu">新增</el-button>
+                        <el-button type="primary" @@click="editMenu">编辑</el-button>
+                        <el-button type="danger">删除</el-button>
                     </el-col>
                 </el-row>
                 <el-row style="margin-top:10px;">
@@ -78,24 +79,22 @@
                                  :props="DefaultProps"
                                  @@node-click="MenuClick">
                             <span class="custom-tree-node" slot-scope="{ node, data }">
-                                <i class="el-icon-location"></i>
-                                <span>{{ node.label }}</span>
-                                <span>
-                                    {{ node.id }}
-                                </span>
+                                <i :class="data.IconClass"></i>
+                                <span>{{ data.MenuName }}</span>
                             </span>
                         </el-tree>
                     </el-col>
                 </el-row>
             </div>
             <div id="DivRight">
-                <el-form ref="AddForm" :rules="AddFormRule" :model="AddFormData" label-width="80px">
-                    <el-tag type="success">新增</el-tag>
-                    <el-form-item label="菜单类型" prop="MenuType">
+
+                <el-form ref="AddForm" :rules="AddFormRule" :model="AddFormData" v-if="FormStatus.addForm" label-width="80px">
+                    <el-tag type="success">{{addFormTitle}}</el-tag>
+                    <el-form-item v-if="MenuTypeDisabled.RadioGroup" label="菜单类型" prop="MenuType">
                         <el-radio-group v-model="AddFormData.MenuType" @@change="addMenuTypeChange">
-                            <el-radio label="Root"  :disabled="MenuTypeDisabled.Root"  border>根节点</el-radio>
+                            <el-radio label="Group" :disabled="MenuTypeDisabled.Group" border>菜单组</el-radio>
                             <el-radio label="Router" :disabled="MenuTypeDisabled.Router" border>路由</el-radio>
-                            <el-radio label="Action":disabled="MenuTypeDisabled.Action" border>动作</el-radio>
+                            <el-radio label="Action" :disabled="MenuTypeDisabled.Action" border>动作</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item label="菜单名称" prop="MenuName">
@@ -124,15 +123,48 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button type="primary" @@click="addFormSubmit">保 存</el-button>
-                        <el-button type="warning" @@click="$refs.AddForm.resetFields()">重 置</el-button>
+                        <el-button type="warning" @@click="addMenuTypeChange">重 置</el-button>
                     </el-form-item>
-         
+                </el-form>
+
+                <el-form ref="EditForm" :rules="EditFormRule" :model="EditFormData" v-if="FormStatus.editForm" label-width="80px">
+                    <el-tag type="success">编辑</el-tag>
+                    <el-form-item label="菜单名称" prop="MenuName">
+                        <el-input v-model="EditFormData.MenuName" placeholder="请输入菜单名称"></el-input>
+                    </el-form-item>
+                    <el-form-item label="菜单地址" prop="MenuUrl" v-if="EditFormData.MenuType=='Router'">
+                        <el-input v-model="EditFormData.MenuUrl" placeholder="请输入菜单地址"></el-input>
+                    </el-form-item>
+                    <el-form-item label="动作编码" prop="ActionCode" v-if="EditFormData.MenuType=='Action'">
+                        <el-input v-model="EditFormData.ActionCode" placeholder="请输入动作编码"></el-input>
+                    </el-form-item>
+                    <el-form-item label="动作描述" prop="ActionDesc" v-if="EditFormData.MenuType=='Action'">
+                        <el-input v-model="EditFormData.ActionDesc" placeholder="请输入动作描述"></el-input>
+                    </el-form-item>
+                    <el-form-item label="图标" prop="IconClass" v-if="EditFormData.MenuType!='Action'">
+                        <el-input v-model="EditFormData.IconClass" readonly>
+                            <el-button slot="append" @@click="Dialog.iconDialog=true" icon="el-icon-search"></el-button>
+                        </el-input>
+                    </el-form-item>
+                    <el-form-item label="排序" prop="Sort">
+                        <el-input-number v-model="EditFormData.Sort"></el-input-number>
+                    </el-form-item>
+                    <el-form-item label="是否启用" prop="IsEnabled">
+                        <el-switch v-model="EditFormData.IsEnabled"
+                                   active-color="#13ce66"
+                                   inactive-color="#ff4949">
+                        </el-switch>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @@click="editFormSubmit">保 存</el-button>
+                    </el-form-item>
+                </el-form>
             </div>
             <el-dialog title="选择图标"
                        :visible.sync="Dialog.iconDialog"
                        width="50%">
-                <div style="max-height:200px;overflow-y:auto;overflow-x:hidden"  >
-                    <i v-for="icon in Iconfont" :class="'MenuIcon '+icon.ClassName" :style="{color:icon.IconColor}" @@click="iconClick(icon,Iconfont)"></i>
+                <div style="max-height:200px;overflow-y:auto;overflow-x:hidden">
+                    <i v-for="icon in Iconfont" :title="icon.ClassName" :class="'MenuIcon '+icon.ClassName" :style="{color:icon.IconColor}" @@click="iconClick(icon,Iconfont)"></i>
                 </div>
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @@click="IconDialogSure">确 定</el-button>
@@ -148,57 +180,22 @@
     $vue = new Vue({
         el: "#App",
         data: {
-            MenuData: [{
-                MenuName: '一级 1',
-                id: 1,
-                Children: [{
-                    MenuName: '二级 1-1',
-                    Children: [{
-                        MenuName: '三级 1-1-1'
-                    }]
-                }]
-            }, {
-                MenuName: '一级 2',
-                Children: [{
-                    MenuName: '二级 2-1',
-                    children: [{
-                        MenuName: '三级 2-1-1'
-                    }]
-                }, {
-                    MenuName: '二级 2-2',
-                    Children: [{
-                        MenuName: '三级 2-2-1'
-                    }]
-                }]
-            }, {
-                MenuName: '一级 3',
-                Children: [{
-                    MenuName: '二级 3-1',
-                    Children: [{
-                        MenuName: '三级 3-1-1'
-                    }]
-                }, {
-                    MenuName: '二级 3-2',
-                    Children: [{
-                        MenuName: '三级 3-2-1'
-                    }]
-                }]
-            }],
+            MenuData: [],
             DefaultProps: {
                 children: 'Children',
                 label: 'MenuName'
             },
-            SelectedMenu: {},
+            SelectedMenu: null,
             AddFormData: {
-                MenuName:"",
-                MenuType: "Root",
+                MenuName: "",
+                MenuType: "",
                 MenuUrl: "",
                 ActionCode: "",
                 ActionDesc: "",
                 IconClass: "",
                 ParentId: "",
                 Sort: 0,
-                IsEnabled:true,
+                IsEnabled: true,
             },
             AddFormRule: {
                 MenuName: [
@@ -220,23 +217,224 @@
                     { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
                 ]
             },
+            EditFormData: {
+                Id: "",
+                MenuName: "",
+                MenuType: "",
+                MenuUrl: "",
+                ActionCode: "",
+                ActionDesc: "",
+                IconClass: "",
+                ParentId: "",
+                Sort: 0,
+                IsEnabled: true,
+            },
+            EditFormRule: {
+                MenuName: [
+                    { required: true, message: '请输入菜单名称', trigger: 'change' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ],
+                MenuUrl: [
+                    { required: true, message: '请输入菜单路径', trigger: 'change' },
+                    { max: 100, message: '长度不能超过100个字符', trigger: 'change' }
+                ],
+                ActionCode: [
+                    { required: true, message: '请输入动作编码', trigger: 'change' },
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ],
+                ActionDesc: [
+                    { max: 25, message: '长度不能超过25个字符', trigger: 'change' }
+                ]
+            },
             Dialog: {
                 iconDialog: false
             },
             MenuTypeDisabled: {
-                Root: true,
-                Router: false,
-                Action: false
+                Group: true,
+                Router: true,
+                Action: true,
+                RadioGroup: true
             },
-            Iconfont: []
+            Iconfont: [],
+            addFormTitle: "新增",
+            Loading: {
+                bodyLoading: false
+            },
+            FormStatus: {
+                addForm: false,
+                editForm: false
+            }
         },
         methods: {
             MenuClick: function (menu) {
+                if (this.SelectedMenu != menu) {
+                    this.FormStatus.addForm = false;
+                    this.FormStatus.editForm = false;
+                }
                 this.SelectedMenu = menu;
+            },
+            addRoot: function () {
+                this.AddFormData.MenuName = "";
+                this.AddFormData.MenuType = "Root";
+                this.AddFormData.MenuUrl = "";
+                this.AddFormData.ActionCode = "";
+                this.AddFormData.IconClass = "";
+                this.AddFormData.ParentId = "";
+                this.AddFormData.Sort = 0;
+                this.AddFormData.IsEnabled = true;
+                this.MenuTypeDisabled.Group = true;
+                this.MenuTypeDisabled.Router = true;
+                this.MenuTypeDisabled.Action = true;
+                this.FormStatus.editForm = false;
+                this.FormStatus.addForm = true;
+                this.MenuTypeDisabled.RadioGroup = false;
+                this.addFormTitle = "新增根节点";
+            },
+            addMenu: function () {
+                if (this.SelectedMenu == null) {
+                    this.$message({
+                        showClose: true,
+                        message: "请选择父菜单！",
+                        type: "info"
+                    })
+                    return;
+                }
+                if (this.SelectedMenu.MenuType == "Action") {
+                    this.$message({
+                        showClose: true,
+                        message: "动作菜单下无法新增子菜单！",
+                        type: "info"
+                    })
+                    return;
+                }
+                setIocnDialog();
+                this.AddFormData.ParentId = this.SelectedMenu.Id;
+                if (this.SelectedMenu.MenuType == "Root" || this.SelectedMenu.MenuType == "Group") {
+                    this.MenuTypeDisabled.Action = true;
+                    this.MenuTypeDisabled.Group = false;
+                    this.MenuTypeDisabled.Router = false;
+                    this.AddFormData.MenuType = "Group";
+                }
+                if (this.SelectedMenu.MenuType == "Router") {
+                    this.MenuTypeDisabled.Action = false;
+                    this.MenuTypeDisabled.Group = true;
+                    this.MenuTypeDisabled.Router = true;
+                    this.AddFormData.MenuType = "Action";
+                }
+                this.addFormTitle = "新增子菜单";
+                this.FormStatus.editForm = false;
+                this.FormStatus.addForm = true;
+                setTimeout(function () { $vue.$refs.AddForm.resetFields(); }, 0);
+                this.MenuTypeDisabled.RadioGroup = true;
+            },
+            editMenu: function () {
+                if (this.SelectedMenu == null) {
+                    this.$message({
+                        showClose: true,
+                        message: "请选择菜单！",
+                        type: "info"
+                    })
+                    return;
+                }
+                axios.post("GetMenu", { menuId: this.SelectedMenu.Id }).then(function (request) {
+                    $vue.EditFormData = request.data;
+                    $vue.FormStatus.addForm = false;
+                    $vue.FormStatus.editForm = true;
+                }).catch(function () {
+                    $vue.$message({
+                        showClose: true,
+                        message: "服务器出错！",
+                        type:"error"
+                    })
+                });
             },
             addFormSubmit: function () {
                 this.$refs.AddForm.validate(function (result, obj) {
-
+                    if (result) {
+                        $vue.Loading.bodyLoading = true;
+                        axios.post("AddMenu", $vue.AddFormData).then(function (response) {
+                            $vue.Loading.bodyLoading = false;
+                            if (response.data.success) {
+                                $vue.$message({
+                                    showClose: true,
+                                    message: '新增成功！',
+                                    type: 'success'
+                                });
+                                var newMenu = JSON.parse(JSON.stringify($vue.AddFormData));
+                                newMenu.Id = response.data.msg;
+                                newMenu.Children = [];
+                                if (newMenu.MenuType == "Action") {
+                                    newMenu.IconClass = "icon iconfont icon-thunderbolt-fill";
+                                }
+                                if ($vue.AddFormData.MenuType == "Root") {
+                                    $vue.MenuData.push(newMenu);
+                                }
+                                else {
+                                    if ($vue.SelectedMenu.Children == null) {
+                                        $vue.SelectedMenu.Children = [];
+                                    }
+                                    $vue.SelectedMenu.Children.push(newMenu); 
+                                }
+                                menuSort($vue.MenuData);
+                            }
+                            else {
+                                $vue.$message({
+                                    showClose: true,
+                                    message: '新增失败！',
+                                    type: 'info'
+                                });
+                            }
+                        }).catch(function () {
+                            $vue.Loading.bodyLoading = false;
+                            $vue.$message({
+                                showClose: true,
+                                message: '服务器出错！',
+                                type: 'error'
+                            });
+                        });
+                        $vue.FormStatus.addForm = false;
+                    }
+                });
+            },
+            editFormSubmit: function () {
+                this.$refs.EditForm.validate(function (result, obj) {
+                    if (result) {
+                        $vue.Loading.bodyLoading = true;
+                        axios.post("EditMenu", $vue.EditFormData).then(function (response) {
+                            $vue.Loading.bodyLoading = false;
+                            if (response.data.success) {
+                                $vue.$message({
+                                    showClose: true,
+                                    message: '修改成功！',
+                                    type: 'success'
+                                });
+                                $vue.SelectedMenu.Children.push(JSON.parse(JSON.stringify($vue.EditFormData))); 
+                                $vue.SelectedMenu.Sort = $vue.EditFormData.Sort;
+                                $vue.SelectedMenu.MenuName = $vue.EditFormData.MenuName;
+                                $vue.SelectedMenu.MenuUrl = $vue.EditFormData.MenuUrl;
+                                $vue.SelectedMenu.ActionCode = $vue.EditFormData.ActionCode;
+                                $vue.SelectedMenu.ActionDesc = $vue.EditFormData.ActionDesc;
+                                menuSort($vue.MenuData);
+                                Vue.set($vue.SelectedMenu, "IconClass", $vue.EditFormData.IconClass);
+                            }
+                            else {
+                                $vue.$message({
+                                    showClose: true,
+                                    message: '修改失败！',
+                                    type: 'info'
+                                });
+                            }
+                        }).catch(function () {
+                            $vue.Loading.bodyLoading = false;
+                            $vue.$message({
+                                showClose: true,
+                                message: '服务器出错！',
+                                type: 'error'
+                            });
+                        });
+                        $vue.FormStatus.editForm = false;
+                       
+                    }
                 });
             },
             IconDialogSure: function () {
@@ -246,18 +444,18 @@
                 if (selectIcon.length != 1) {
                     return;
                 }
-                this.AddFormData.IconClass = selectIcon[0].ClassName;
+                if (this.FormStatus.addForm) {
+                    this.AddFormData.IconClass = selectIcon[0].ClassName;
+                }
+                if (this.FormStatus.editForm) {
+                    this.EditFormData.IconClass = selectIcon[0].ClassName;
+                }
                 this.Dialog.iconDialog = false;
             },
             iconClick: function (icon, iconList) {
-                iconList.filter(function (v, i) {
-                    return v.IconColor == "red";
-                }).forEach(function (v, i) {
-                    v.IconColor = null;
-                })
-                Vue.set(icon, "IconColor", "red");
+                setIocnDialog(icon.ClassName);
             },
-            addMenuTypeChange: function (v) {
+            addMenuTypeChange: function (val) {
                 this.AddFormData.MenuName = "";
                 this.AddFormData.MenuUrl = "";
                 this.AddFormData.ActionCode = "";
@@ -266,13 +464,9 @@
                 this.AddFormData.Sort = 0;
                 setTimeout(function () {
                     $vue.$refs.AddForm.clearValidate();
-                    $vue.Iconfont.filter(function (v, i) {
-                        return v.IconColor == "red";
-                    }).forEach(function (v, i) {
-                        Vue.set(v, "IconColor", null);
-                    });
+                    setIocnDialog();
                 }, 0);
-               
+
             }
         }
 
@@ -280,4 +474,33 @@
     axios.get("/fonts/Iconfont.json", {}).then(function (response) {
         $vue.Iconfont = response.data;
     })
+    axios.post("GetAllMenu").then(function (response) {
+        $vue.MenuData = response.data;
+
+    });
+    function setIocnDialog(className) {
+        $vue.Iconfont.filter(function (v, i) {
+            return v.IconColor == "red";
+        }).forEach(function (v, i) {
+            Vue.set(v, "IconColor", null);
+        });
+        if (className != null && className != "") {
+            $vue.Iconfont.filter(function (v, i) {
+                return v.ClassName == className;
+            }).forEach(function (v, i) {
+                Vue.set(v, "IconColor", "red");
+            });
+        }
+
+    }
+    function menuSort(menu) {
+        if (menu != null && menu.length > 0) {
+            menu.sort(function (a, b) {
+                return a.Sort - b.Sort;
+            });
+            menu.forEach(function (v) {
+                menuSort(v.Children);
+            });
+        }
+    }
 </script>
