@@ -15,6 +15,11 @@ namespace Data.SystemData
             return dp.System_Menu.Where(m => m.ParentId == parentId && m.IsDel == false).OrderBy(m=>m.Sort).ToList();
         }
 
+        public List<System_Menu> GetMenuByParentIdWithoutAction(DataProvider dp, Guid parentId)
+        {
+            return dp.System_Menu.Where(m => m.ParentId == parentId && m.IsDel == false&&m.MenuType!="Action").OrderBy(m => m.Sort).ToList();
+        }
+
         public System_Menu GetMenuById(DataProvider dp, Guid id)
         {
             return dp.System_Menu.FirstOrDefault(m => m.Id == id && m.IsDel == false);

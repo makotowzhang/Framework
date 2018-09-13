@@ -8,6 +8,8 @@ using System.IO;
 using System.Xml;
 using System.Text;
 using System.Xml.Serialization;
+using Model.SystemModel;
+using Business.SystemBusiness;
 
 namespace GUGFramework.Controllers
 {
@@ -18,10 +20,13 @@ namespace GUGFramework.Controllers
             return View();
         }
 
+        public ActionResult GetMenu()
+        {
+            return Json(new MenuBusiness().GetNavMenu());
+        }
 
         public ActionResult Test()
         {
-
             return Json(CurrentUser,JsonRequestBehavior.AllowGet);
         }
     }

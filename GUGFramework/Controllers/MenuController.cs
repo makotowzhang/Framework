@@ -36,6 +36,12 @@ namespace GUGFramework.Controllers
             return Json(new JsonMessage(business.EditMenu(model)));
         }
 
+        public ActionResult DeleteMenu(MenuModel model)
+        {
+            model.UpdateUser = CurrentUser.Id;
+            return Json(new JsonMessage(business.DeleteMenu(model)));
+        }
+
         public ActionResult GetMenu(Guid menuId)
         {
             return Json(business.GetMenuById(menuId));

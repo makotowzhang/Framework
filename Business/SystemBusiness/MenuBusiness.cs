@@ -107,6 +107,18 @@ namespace Business.SystemBusiness
             }
         }
 
+        public bool DeleteMenu(MenuModel model)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                System_Menu entity = data.GetMenuById(dp, model.Id);
+                entity.UpdateTime=DateTime.Now;
+                entity.IsDel = true;
+                dp.SaveChanges();
+                return true;
+            }
+        }
+
         public List<MenuModel> GetChildMenu(DataProvider dp, Guid parnetId)
         {
             List<MenuModel> list = new List<MenuModel>();
@@ -119,11 +131,33 @@ namespace Business.SystemBusiness
             return list;
         }
 
+        public List<MenuModel> GetChildMenuWithoutAction(DataProvider dp, Guid parnetId)
+        {
+            List<MenuModel> list = new List<MenuModel>();
+            foreach (var m in data.GetMenuByParentIdWithoutAction(dp, parnetId))
+            {
+                MenuModel model = Mapper.Map<MenuModel>(m);
+                model.Children = GetChildMenuWithoutAction(dp, model.Id);
+                list.Add(model);
+            }
+            return list;
+        }
+
         public MenuModel GetMenuById(Guid menuId)
         {
             using (DataProvider dp = new DataProvider())
             {
-                return Mapper.Map<MenuModel>(data.GetMenuById(dp, menuId));
+                MenuModel temp = Mapper.Map<MenuModel>(data.GetMenuById(dp, menuId));
+                temp.Children = GetChildMenu(dp, menuId);
+                return temp;
+            }
+        }
+
+        public List<MenuModel> GetNavMenu()
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                return GetChildMenuWithoutAction(dp, Guid.Empty);
             }
         }
     }

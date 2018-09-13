@@ -26,7 +26,7 @@ namespace Business.SystemBusiness
             }
         }
 
-        public bool UpdateRole(RoleModel model)
+        public bool EditRole(RoleModel model)
         {
             using (DataProvider dp = new DataProvider())
             {
@@ -42,6 +42,14 @@ namespace Business.SystemBusiness
                 entity.UpdateUser = model.UpdateUser;
                 entity.UpdateTime = DateTime.Now;
                 return dp.SaveChanges() == 1;
+            }
+        }
+
+        public RoleModel GetRole(Guid roleId)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                return Mapper.Map<RoleModel>(data.GetModel(dp, roleId));
             }
         }
 
@@ -61,6 +69,26 @@ namespace Business.SystemBusiness
                 int total;
                 List<RoleModel> list = Mapper.Map<List<RoleModel>>(data.GetRoleList(dp, filter, out total,false));
                 return list;
+            }
+        }
+
+        public bool DeleteRole(List<RoleModel> model)
+        {
+            if (model == null || model.Count == 0)
+            {
+                return false;
+            }
+            using (DataProvider dp = new DataProvider())
+            {
+                foreach (RoleModel m in model)
+                {
+                    System_Role entity = data.GetModel(dp, m.Id);
+                    entity.IsDel = true;
+                    entity.UpdateUser = m.UpdateUser;
+                    entity.UpdateTime = DateTime.Now;
+                }
+                dp.SaveChanges();
+                return true;
             }
         }
     }

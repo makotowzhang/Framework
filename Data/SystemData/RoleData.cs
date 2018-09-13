@@ -27,12 +27,12 @@ namespace Data.SystemData
 
         public List<System_Role> GetRoleList(DataProvider dp, RoleFilter filter, out int total, bool IsPage = true)
         {
-            var temp = dp.System_Role.Where(m => m.IsEnabled==true&&m.IsDel==false);
+            var temp = dp.System_Role.Where(m => m.IsDel==false);
             if (!string.IsNullOrWhiteSpace(filter.RoleName))
             {
                 temp = temp.Where(m => m.RoleName.Contains(filter.RoleName));
             }
-            temp = temp.OrderBy(m => m.CreateTime);
+            temp = temp.OrderBy(m => m.Sort);
             total = temp.Count();
             if (IsPage)
             {

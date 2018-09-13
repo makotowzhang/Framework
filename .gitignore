@@ -12,3 +12,6 @@ GUGFramework/obj/
 Model/bin/
 Model/obj/
 packages/
+*.user
+*.pubxml
+GUGFramework/GUGFramework.csproj.user

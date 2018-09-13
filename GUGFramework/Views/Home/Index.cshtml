@@ -12,6 +12,7 @@
     <script src="~/Scripts/Vue/vue.js"></script>
     <script src="~/Scripts/ElementUI/index.js"></script>
     <script src="~/Scripts/Axios/axios.min.js"></script>
+    <link href="~/Content/iconfont/iconfont.css" rel="stylesheet" />
     <title></title>
 
     <style>
@@ -82,20 +83,23 @@
         .el-tabs__header {
             margin: 0;
         }
+        .tabIcon {
+           font-size:15px;
+        }
     </style>
 
     <script type="text/x-template" id="NavMenu">
         <div>
             <template v-for="(v,i) in model">
-                <el-menu-item v-if="v.children==null||v.children.length==0" :index="v.NavId">
-                    <span><i v-if="v.Icon!=''" :class="v.Icon"></i>{{v.NavName}}</span>
+                <el-menu-item v-if="v.Children==null||v.Children.length==0" :index="v.Id">
+                    <span><i v-if="v.IconClass!=''&&v.IconClass!=null" :class="v.IconClass"></i>{{v.MenuName}}</span>
                 </el-menu-item>
-                <el-submenu v-else :index="v.NavId">
+                <el-submenu v-else :index="v.Id">
                     <template slot="title">
-                        <i v-if="v.Icon!=''" :class="v.Icon"></i>
-                        <span>{{v.NavName}}</span>
+                        <i v-if="v.IconClass!=''&&v.IconClass!=null" :class="v.IconClass"></i>
+                        <span>{{v.MenuName}}</span>
                     </template>
-                    <cbb :model="v.children"></cbb>
+                    <cbb :model="v.Children"></cbb>
                 </el-submenu>
             </template>
         </div>
@@ -109,6 +113,7 @@
         <div class="MainDiv">
             <div class="MainLeft">
                 <el-menu default-active="1"
+                         ref="Menu"
                          @@open="handleOpen"
                          @@close="handleClose"
                          @@select="addTab"
@@ -124,9 +129,10 @@
                     <el-tabs v-model="editableTabsValue" type="card"  @@tab-remove="removeTab">
                         <el-tab-pane style="height:100%" v-for="(item, index) in editableTabs"
                                      :key="item.name"
-                                     :label="item.title"
                                      :name="item.name"
+                                     @*:label="item.title"*@
                                      :closable="item.closable==null?true:item.closable">
+                            <span slot="label"><i class="tabIcon" v-if="item.IconClass!=null&&item.IconClass!=''" :class="item.IconClass"></i> {{item.title}}</span>
                             <iframe style="border:0;width:100%;height:100%;overflow:auto;" :src="item.content"></iframe>
                         </el-tab-pane>
                     </el-tabs>
@@ -153,7 +159,7 @@
             editableTabs: [{
                 title: '欢迎',
                 name: '1',
-                content: '/Menu/Index',
+                content: '/Welcome/Index',
                 closable: false
             }],
             tabIndex: 1
@@ -170,7 +176,7 @@
                 let item = getMenu(this.MenuList, index);
                 let temp;
                 this.editableTabs.forEach(function (tab, index) {
-                    if (item.NavId == tab.name) {
+                    if (item.Id == tab.name) {
                         temp = tab;
                     }
                 })
@@ -178,12 +184,14 @@
                     this.editableTabsValue = temp.name;
                     return;
                 }
+                
                 this.editableTabs.push({
-                    title: item.NavName,
-                    name: item.NavId,
-                    content: item.Url
+                    title: item.MenuName,
+                    name: item.Id,
+                    IconClass: item.IconClass,
+                    content: item.MenuUrl + "?MenuId=" + item.Id
                 });
-                this.editableTabsValue = item.NavId;
+                this.editableTabsValue = item.Id;
             },
             //移除标签触发
             removeTab: function (targetName) {
@@ -204,21 +212,10 @@
             }
         }
     });
-   
-    $app.MenuList =
-        [{
-            NavName: "导航一", NavId: "1", Icon: "el-icon-location",
-        children: [{ NavName: "导航1-1", NavId: "1-1", Icon: "el-icon-location", children: [{ NavName: "导航1-1-1", NavId: "1-1-1", Icon: "el-icon-location", Url: "https://www.baidu.com" }] }, { NavName: "导航1-2", NavId: "1-2", Icon: "el-icon-location", Url: "https://www.baidu.com" }]
-        },
-        {
-            NavName: "导航二", NavId: "2", Icon: "el-icon-menu",
-            children: [{ NavName: "导航2-1", NavId: "2-1", Icon: "el-icon-location" }, { NavName: "导航2-2", NavId: "2-2", Icon: "el-icon-location" }]
-        },
-        {
-            NavName: "导航三", NavId: "3", Icon: "el-icon-document",
-            children: [{ NavName: "导航3-1", NavId: "3-1", Icon: "el-icon-location" }, { NavName: "导航3-2", NavId: "3-2", Icon: "el-icon-location" }]
-        },
-            { NavName: "导航四", NavId: "4", Icon: "" }];
+
+    axios.post("/Home/GetMenu").then(function (response) {
+        $app.MenuList = response.data;
+    });
 
     function getMenu(menuList, navId) {
         var menu;
@@ -227,11 +224,11 @@
             if (menu != null) {
                 break;
             }
-            if (m.NavId == navId) {
+            if (m.Id == navId) {
                 menu = m;
             }
-            if (menu == null && m.children != null && m.children.length > 0) {
-                menu = getMenu(m.children, navId);
+            if (menu == null && m.Children != null && m.Children.length > 0) {
+                menu = getMenu(m.Children, navId);
             }
         } 
         return menu;
