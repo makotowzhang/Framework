@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemData\AuthorizeData.cs" />
     <Compile Include="SystemData\LoginData.cs" />
     <Compile Include="SystemData\MenuData.cs" />
     <Compile Include="SystemData\RoleData.cs" />

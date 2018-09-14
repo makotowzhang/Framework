@@ -5,6 +5,16 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="FrameworkModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="System_Authorize">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MenuId" Type="uniqueidentifier" />
+          <Property Name="RoleId" Type="uniqueidentifier" />
+          <Property Name="CreateUser" Type="uniqueidentifier" />
+          <Property Name="CreateTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="System_Menu">
           <Key>
             <PropertyRef Name="Id" />
@@ -68,6 +78,7 @@
           <Property Name="UpdateTime" Type="datetime" />
         </EntityType>
         <EntityContainer Name="FrameworkModelStoreContainer">
+          <EntitySet Name="System_Authorize" EntityType="Self.System_Authorize" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Menu" EntityType="Self.System_Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Role" EntityType="Self.System_Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_User" EntityType="Self.System_User" Schema="dbo" store:Type="Tables" />
@@ -82,6 +93,7 @@
           <EntitySet Name="System_Role" EntityType="Entity.System_Role" />
           <EntitySet Name="System_UserRole" EntityType="Entity.System_UserRole" />
           <EntitySet Name="System_Menu" EntityType="Entity.System_Menu" />
+          <EntitySet Name="System_Authorize" EntityType="Entity.System_Authorize" />
         </EntityContainer>
         <EntityType Name="System_User">
           <Key>
@@ -144,6 +156,16 @@
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
           <Property Name="UpdateUser" Type="Guid" />
           <Property Name="UpdateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="System_Authorize">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MenuId" Type="Guid" />
+          <Property Name="RoleId" Type="Guid" />
+          <Property Name="CreateUser" Type="Guid" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -213,6 +235,17 @@
                 <ScalarProperty Name="MenuType" ColumnName="MenuType" />
                 <ScalarProperty Name="MenuUrl" ColumnName="MenuUrl" />
                 <ScalarProperty Name="MenuName" ColumnName="MenuName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="System_Authorize">
+            <EntityTypeMapping TypeName="Entity.System_Authorize">
+              <MappingFragment StoreEntitySet="System_Authorize">
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

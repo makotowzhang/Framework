@@ -1,0 +1,110 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>权限管理</title>
+    <script src="~/Scripts/Vue/vue.js"></script>
+    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
+    <script src="~/Scripts/ElementUI/index.js"></script>
+    <script src="~/Scripts/Axios/axios.min.js"></script>
+    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
+    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
+    <link href="~/Content/iconfont/iconfont.css" rel="stylesheet" />
+    <style>
+        #DivLeft {
+            float: left;
+            height: 100%;
+            width: 50%;
+        }
+
+        #DivRight {
+            box-sizing: border-box;
+            float: left;
+            width: 50%;
+            height: 100%;
+            border-left: 2px solid #E4E7ED;
+            overflow-y:auto;
+        }
+
+        .el-tree-node__label {
+            font-size: 16px;
+        }
+
+        .el-tree-node__content {
+            padding-top: 3px;
+            padding-bottom: 3px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div id="App" v-loading="Loading.bodyLoading">
+        <template>
+            <div id="DivLeft">            
+            </div>
+            <div id="DivRight">
+                <el-row class="Table_Button_Row">
+                    <el-col :span="24">
+                        <el-button type="primary" >全选</el-button>
+                    </el-col>
+                </el-row>
+                <el-row style="margin-top:10px;">
+                    <el-col :span="24">
+                        <el-tree style=""
+                                 :data="MenuData"
+                                 :highlight-current="true"
+                                 :props="DefaultProps"
+                                 show-checkbox
+                                 node-key="Id"
+                                 @@node-click="MenuClick"
+                                 ref="MenuTree">
+                            <span class="custom-tree-node" slot-scope="{ node, data }" :style="{color:data.IsEnabled?'':'#e4e4e4'}">
+                                <i :class="data.IconClass"></i>
+                                <span>{{ data.MenuName }}</span>
+                            </span>
+                        </el-tree>
+                    </el-col>
+                </el-row>
+            </div>
+          
+
+        </template>
+    </div>
+</body>
+</html>
+<script>
+    $vue = new Vue({
+        el: "#App",
+        data: {
+            MenuData: [],
+            DefaultProps: {
+                children: 'Children',
+                label: 'MenuName'
+            },
+            Loading: {
+                bodyLoading: false
+            }
+        },
+        methods: {
+            MenuClick: function (menu) {
+            },
+         
+        }
+
+    });
+
+    function getTree() {
+        axios.post("/Menu/GetAllMenu").then(function (response) {
+            $vue.MenuData = response.data;
+        });
+    }
+    getTree();
+
+</script>
