@@ -38,5 +38,12 @@ namespace Data.SystemData
 
             return dp.System_Menu.Where(m => menuList.Contains(m.Id)).ToList();
         }
+
+        public List<System_Menu> GetAuthorizeAction(DataProvider dp, Guid menuId,List<Guid> roleList)
+        {
+            var childMenuList = dp.System_Menu.Where(m => m.ParentId == menuId).Select(m=>m.Id);
+            var authorize = dp.System_Authorize.Where(m => childMenuList.Contains((Guid)m.MenuId) && roleList.Contains((Guid)m.RoleId)).Select(m=>m.MenuId).Distinct();
+            return dp.System_Menu.Where(m => authorize.Contains(m.Id)).ToList();
+        }
     }
 }

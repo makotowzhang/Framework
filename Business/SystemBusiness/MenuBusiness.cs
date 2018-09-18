@@ -131,34 +131,46 @@ namespace Business.SystemBusiness
             return list;
         }
 
-        public List<MenuModel> GetChildMenuWithoutAction(DataProvider dp, Guid parnetId)
+        public MenuModel GetMenuById(Guid menuId)
+
+        {
+
+            using (DataProvider dp = new DataProvider())
+
+            {
+
+                MenuModel temp = Mapper.Map<MenuModel>(data.GetMenuById(dp, menuId));
+
+                temp.Children = GetChildMenu(dp, menuId);
+
+                return temp;
+
+            }
+
+        }
+
+
+        public List<MenuModel> GetNavMenu(List<RoleModel> roleList)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                var authorMenuId = data.GetRoleAuthorMenuId(dp, roleList.Select(m => m.Id).ToList()).Select(m=>m.Value).ToList();
+                List<System_Menu> parentMenuList = data.GetParentMenu(dp, authorMenuId);
+                return GetMenuByParentId(Guid.Empty, parentMenuList);
+            }
+        }
+
+        public List<MenuModel> GetMenuByParentId(Guid parentId, List<System_Menu> menuList)
         {
             List<MenuModel> list = new List<MenuModel>();
-            foreach (var m in data.GetMenuByParentIdWithoutAction(dp, parnetId))
+            foreach (var m in menuList.Where(m => m.ParentId == parentId && m.IsDel == false).OrderBy(m => m.Sort))
             {
                 MenuModel model = Mapper.Map<MenuModel>(m);
-                model.Children = GetChildMenuWithoutAction(dp, model.Id);
+                model.Children = GetMenuByParentId( model.Id, menuList);
                 list.Add(model);
             }
             return list;
         }
 
-        public MenuModel GetMenuById(Guid menuId)
-        {
-            using (DataProvider dp = new DataProvider())
-            {
-                MenuModel temp = Mapper.Map<MenuModel>(data.GetMenuById(dp, menuId));
-                temp.Children = GetChildMenu(dp, menuId);
-                return temp;
-            }
-        }
-
-        public List<MenuModel> GetNavMenu()
-        {
-            using (DataProvider dp = new DataProvider())
-            {
-                return GetChildMenuWithoutAction(dp, Guid.Empty);
-            }
-        }
     }
 }

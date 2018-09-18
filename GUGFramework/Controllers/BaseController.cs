@@ -22,5 +22,11 @@ namespace GUGFramework.Controllers
                 return new LoginBusiness().GetUserInfoById(Guid.Parse(User.Identity.Name));
             }
         }
+
+        public ActionResult GetPageAuthorize(Guid menuId)
+        {
+            return Json(new AuthorizeBusiness().GetAuthorizeAction(menuId,CurrentUser.UserRole).Select(m=>new
+            { m.ActionCode }));
+        }
     }
 }

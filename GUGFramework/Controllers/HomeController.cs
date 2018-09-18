@@ -22,7 +22,7 @@ namespace GUGFramework.Controllers
 
         public ActionResult GetMenu()
         {
-            return Json(new MenuBusiness().GetNavMenu());
+            return Json(new MenuBusiness().GetNavMenu(CurrentUser.UserRole));
         }
 
         public ActionResult Test()

@@ -132,7 +132,7 @@
                                      :name="item.name"
                                      @*:label="item.title"*@
                                      :closable="item.closable==null?true:item.closable">
-                            <span slot="label"><i class="tabIcon" v-if="item.IconClass!=null&&item.IconClass!=''" :class="item.IconClass"></i> {{item.title}}</span>
+                            <span slot="label"><i  v-if="item.IconClass!=null&&item.IconClass!=''" :class="'tabIcon ' + item.IconClass"></i> {{item.title}}</span>
                             <iframe style="border:0;width:100%;height:100%;overflow:auto;" :src="item.content"></iframe>
                         </el-tab-pane>
                     </el-tabs>

@@ -269,14 +269,16 @@
                             if (response.data.success) {
                                 $vue.$message({
                                     type: 'success',
-                                    message: '新增成功'
+                                    message: '新增成功',
+                                    showClose: true
                                 });
                                 getList();
                             }
                             else {
                                 $vue.$message({
-                                    type: 'success',
-                                    message: '新增失败'
+                                    type: 'info',
+                                    message: '新增失败',
+                                    showClose: true
                                 });
                             }
                             $vue.Dialog.addDialog = false;
@@ -285,7 +287,8 @@
                             $vue.Loading.bodyLoading = false;
                             $vue.$message({
                                 type: 'error',
-                                message: '服务器异常'
+                                message: '服务器异常',
+                                showClose: true
                             });
                             console.log(error);
                             $vue.Dialog.addDialog = false;
@@ -305,14 +308,16 @@
                             if (response.data.success) {
                                 $vue.$message({
                                     type: 'success',
-                                    message: '修改成功'
+                                    message: '修改成功',
+                                    showClose: true
                                 });
                                 getList();
                             }
                             else {
                                 $vue.$message({
-                                    type: 'success',
-                                    message: '修改失败'
+                                    type: 'info',
+                                    message: '修改失败',
+                                    showClose: true
                                 });
                             }
                             $vue.Dialog.editDialog = false;
@@ -321,7 +326,8 @@
                             $vue.Loading.bodyLoading = false;
                             $vue.$message({
                                 type: 'error',
-                                message: '服务器异常'
+                                message: '服务器异常',
+                                showClose: true
                             });
                             console.log(error);
                             $vue.Dialog.editDialog = false;

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Model.SystemModel;
 using Entity;
 using Data.SystemData;
+using AutoMapper;
 
 namespace Business.SystemBusiness
 {
@@ -42,6 +43,14 @@ namespace Business.SystemBusiness
             using (DataProvider dp = new DataProvider())
             {
                 return data.GetAuthorizeListByRoleId(dp, roleId).Select(m => m.MenuId).ToList();
+            }
+        }
+
+        public List<MenuModel> GetAuthorizeAction(Guid menuId, List<RoleModel> roleList)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                return Mapper.Map<List<MenuModel>>(data.GetAuthorizeAction(dp, menuId, roleList.Select(m=>m.Id).ToList()));
             }
         }
     }
