@@ -129,47 +129,48 @@
 </head>
 <body>
     <div id="App">
-
-        <div class="TabMenu" @@click.stop="tabMenuClick" v-show="TabMenuPosition.visible" ref="TabMenu" :style="{top:TabMenuPosition.top+'px',left:TabMenuPosition.left+'px'}">
-            <div v-show="TabMenuPosition.isSetMenu" @@click="refreshTab"  style="color:#67C23A"><i class="icon iconfont icon-reload"></i>刷新</div>
-            <div v-show="TabMenuPosition.isSetMenu" @@click="closeThisTab"  style="color:#909399"><i class="icon iconfont icon-close"></i>关闭此标签</div>
-            <div v-show="TabMenuPosition.isSetMenu" @@click="closeExcept"  style="color:#E6A23C"><i class="icon iconfont icon-close-circle"></i>关闭除此之外</div>
-            <div @@click="closeAll"  style="color:#F56C6C"><i class="icon iconfont icon-close-circle-fill"></i>关闭所有标签</div>
-        </div>
-        <div class="HeadDiv">
-
-        </div>
-        <div class="MainDiv">
-            <div class="MainLeft">
-                <el-menu default-active="1"
-                         ref="Menu"
-                         @@open="handleOpen"
-                         @@close="handleClose"
-                         @@select="addTab"
-                         background-color="#393C3C"
-                         text-color="#fff"
-                         active-text-color="#ffd04b"
-                         style="border-right:0">
-                    <cbb :model="MenuList"></cbb>
-                </el-menu>
+        <template>
+            <div class="TabMenu" @@click.stop="tabMenuClick" v-show="TabMenuPosition.visible" ref="TabMenu" :style="{top:TabMenuPosition.top+'px',left:TabMenuPosition.left+'px'}">
+                <div v-show="TabMenuPosition.isSetMenu" @@click="refreshTab" style="color:#67C23A"><i class="icon iconfont icon-reload"></i>刷新</div>
+                <div v-show="TabMenuPosition.isSetMenu" @@click="closeThisTab" style="color:#909399"><i class="icon iconfont icon-close"></i>关闭此标签</div>
+                <div v-show="TabMenuPosition.isSetMenu" @@click="closeExcept" style="color:#E6A23C"><i class="icon iconfont icon-close-circle"></i>关闭除此之外</div>
+                <div @@click="closeAll" style="color:#F56C6C"><i class="icon iconfont icon-close-circle-fill"></i>关闭所有标签</div>
             </div>
-            <div class="MainRight">
-                <div class="MianContent" id="MianContent" @@contextmenu.prevent.stop="tabContextmenu()">
-                    <el-tabs v-model="editableTabsValue" type="card" @@tab-remove="removeTab">
-                        <el-tab-pane style="height:100%" v-for="(item, index) in editableTabs"
-                                     :key="item.name"
-                                     :name="item.name"
-                                     @*:label="item.title"*@
-                                     :closable="item.closable==null?true:item.closable">
-                            <span slot="label" @@contextmenu.prevent.stop="tabContextmenu(item.name)"><i v-if="item.IconClass!=null&&item.IconClass!=''" :class="'tabIcon ' + item.IconClass"></i> {{item.title}}</span>
-                            <iframe style="border:0;width:100%;height:100%;overflow:auto;" :src="item.content"></iframe>
-                        </el-tab-pane>
-                    </el-tabs>
+            <div class="HeadDiv">
+
+            </div>
+            <div class="MainDiv">
+                <div class="MainLeft">
+                    <el-menu default-active="1"
+                             ref="Menu"
+                             @@open="handleOpen"
+                             @@close="handleClose"
+                             @@select="addTab"
+                             background-color="#393C3C"
+                             text-color="#fff"
+                             active-text-color="#ffd04b"
+                             style="border-right:0">
+                        <cbb :model="MenuList"></cbb>
+                    </el-menu>
                 </div>
-            </div>
+                <div class="MainRight">
+                    <div class="MianContent" id="MianContent" @@contextmenu.prevent.stop="tabContextmenu()">
+                        <el-tabs v-model="editableTabsValue" type="card" @@tab-remove="removeTab">
+                            <el-tab-pane style="height:100%" v-for="(item, index) in editableTabs"
+                                         :key="item.name"
+                                         :name="item.name"
+                                         @*:label="item.title"*@
+                                         :closable="item.closable==null?true:item.closable">
+                                <span slot="label" @@contextmenu.prevent.stop="tabContextmenu(item.name)"><i v-if="item.IconClass!=null&&item.IconClass!=''" :class="'tabIcon ' + item.IconClass"></i> {{item.title}}</span>
+                                <iframe style="border:0;width:100%;height:100%;overflow:auto;" :src="item.content"></iframe>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </div>
+                </div>
 
-        </div>
-        <div class="Mainfoot"></div>
+            </div>
+            <div class="Mainfoot"></div>
+        </template>
     </div>
 
 </body>
