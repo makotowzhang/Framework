@@ -9,13 +9,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>权限管理</title>
-    <script src="~/Scripts/Vue/vue.js"></script>
-    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
-    <script src="~/Scripts/ElementUI/index.js"></script>
-    <script src="~/Scripts/Axios/axios.min.js"></script>
-    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
-    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
-    <link href="~/Content/iconfont/iconfont.css" rel="stylesheet" />
+    @Html.Partial("~/Views/Shared/_Head.cshtml")
     <style>
         #DivLeft {
             float: left;
@@ -29,7 +23,7 @@
             width: 50%;
             height: 100%;
             border-left: 2px solid #E4E7ED;
-            overflow-y:auto;
+            overflow-y: auto;
         }
 
         .el-tree-node__label {
@@ -40,8 +34,6 @@
             padding-top: 3px;
             padding-bottom: 3px;
         }
-
-        
     </style>
 </head>
 <body>
@@ -95,9 +87,9 @@
                                  node-key="Id"
                                  @@node-click="MenuClick"
                                  ref="MenuTree">
-                            <span class="custom-tree-node" slot-scope="{ node, data }" :style="{color:data.IsEnabled?'':'#e4e4e4'}">
-                                <i :class="data.IconClass"></i>
-                                <span>{{ data.MenuName }}</span>
+                            <span class="custom-tree-node" slot-scope="scope" :style="{color:scope.data.IsEnabled?'':'#e4e4e4'}">
+                                <i :class="scope.data.IconClass"></i>
+                                <span>{{ scope.data.MenuName }}</span>
                             </span>
                         </el-tree>
                     </el-col>

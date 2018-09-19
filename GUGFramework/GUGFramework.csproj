@@ -186,6 +186,7 @@
     </Content>
     <Content Include="Scripts\Axios\axios.js" />
     <Content Include="Scripts\Axios\axios.min.js" />
+    <Content Include="Scripts\Common\Common.js" />
     <Content Include="Scripts\ElementUI\css\index.css" />
     <Content Include="Scripts\ElementUI\index.js" />
     <Content Include="Scripts\Polyfill\polyfill.js" />
@@ -234,6 +235,7 @@
     <Content Include="Views\Role\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Authorize\Index.cshtml" />
+    <Content Include="Views\Shared\_Head.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">

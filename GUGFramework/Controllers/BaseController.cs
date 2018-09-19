@@ -25,8 +25,7 @@ namespace GUGFramework.Controllers
 
         public ActionResult GetPageAuthorize(Guid menuId)
         {
-            return Json(new AuthorizeBusiness().GetAuthorizeAction(menuId,CurrentUser.UserRole).Select(m=>new
-            { m.ActionCode }));
+            return Json(new AuthorizeBusiness().GetAuthorizeAction(menuId,CurrentUser.UserRole).Select(m=>m.ActionCode ));
         }
     }
 }

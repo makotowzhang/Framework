@@ -9,12 +9,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>用户管理</title>
-    <script src="~/Scripts/Vue/vue.js"></script>
-    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
-    <script src="~/Scripts/ElementUI/index.js"></script>
-    <script src="~/Scripts/Axios/axios.min.js"></script>
-    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
-    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
+    @Html.Partial("~/Views/Shared/_Head.cshtml")
     <style>
     </style>
 </head>
@@ -33,9 +28,9 @@
                 </el-form>
                 <el-row class="Table_Button_Row">
                     <el-col :span="24">
-                        <el-button type="primary" ref="btnAdd" @@click="openAddDialog">新增</el-button>
-                        <el-button type="primary" :disabled="ButtonState.btnEdit" ref="btnEdit" @@click="openEditDialog">编辑</el-button>
-                        <el-button type="danger" :disabled="ButtonState.btnDelete" ref="btnDelete" @@click="deleteClick">删除</el-button>
+                        <el-button type="primary" v-if="ActionPermission.Add" ref="btnAdd" @@click="openAddDialog">新增</el-button>
+                        <el-button type="primary" v-if="ActionPermission.Edit" :disabled="ButtonState.btnEdit" ref="btnEdit" @@click="openEditDialog">编辑</el-button>
+                        <el-button type="danger"  v-if="ActionPermission.Delete" :disabled="ButtonState.btnDelete" ref="btnDelete" @@click="deleteClick">删除</el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -235,6 +230,11 @@
                 total: 0
             },
             PaginationFilter: {
+            },
+            ActionPermission: {
+                Add: false,
+                Edit: false,
+                Delete: false
             }
         },
         methods: {
@@ -465,11 +465,20 @@
             $vue.$refs.QueryFormDiv.getBoundingClientRect().height -
             $vue.$refs.Pagination.getBoundingClientRect().height - 20;
     }
-    window.onresize();
     getList();
     axios.post("/Role/GetAllRole", {}).then(function (response) {
         $vue.SelectOption.userRoleOption = response.data;
     }).catch(function (error) {
         console.log(error);
+        });
+    axios.post("GetPageAuthorize", { menuId: GetUrlParameter("menuid") }).then(function (response) {
+        for (var m in $vue.ActionPermission) {
+            for (var n in response.data) {
+                if (m == response.data[n]) {
+                    $vue.ActionPermission[m] = true;
+                }
+            }
+        }
+        setTimeout(window.onresize, 0);
     });
 </script>

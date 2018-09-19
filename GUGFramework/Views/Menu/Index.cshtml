@@ -9,13 +9,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>菜单管理</title>
-    <script src="~/Scripts/Vue/vue.js"></script>
-    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
-    <script src="~/Scripts/ElementUI/index.js"></script>
-    <script src="~/Scripts/Axios/axios.min.js"></script>
-    <script src="~/Scripts/Polyfill/polyfill.min.js"></script>
-    <link href="~/Content/CommonStyle.css" rel="stylesheet" />
-    <link href="~/Content/iconfont/iconfont.css" rel="stylesheet" />
+    @Html.Partial("~/Views/Shared/_Head.cshtml")
     <style>
 
         #App {
@@ -80,9 +74,9 @@
                                  node-key="Id"
                                  @@node-click="MenuClick"
                                  ref="MenuTree">
-                            <span class="custom-tree-node" slot-scope="{ node, data }" :style="{color:data.IsEnabled?'':'#e4e4e4'}">
-                                <i :class="data.IconClass"></i>
-                                <span>{{ data.MenuName }}</span>
+                            <span class="custom-tree-node" slot-scope="scope" :style="{color:scope.data.IsEnabled?'':'#e4e4e4'}">
+                                <i :class="scope.data.IconClass"></i>
+                                <span>{{ scope.data.MenuName }}</span>
                             </span>
                         </el-tree>
                     </el-col>
@@ -316,6 +310,7 @@
                 this.AddFormData.MenuName = "";
                 this.AddFormData.MenuUrl = "";
                 this.AddFormData.ActionCode = "";
+                this.AddFormData.ActionDesc = "";
                 this.AddFormData.IconClass = "";
                 this.AddFormData.ParentId = this.SelectedMenu.Id;
                 this.AddFormData.Sort = 0;
