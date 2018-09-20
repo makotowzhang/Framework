@@ -132,7 +132,7 @@
         <template>
             <div class="TabMenu" @@click.stop="tabMenuClick" v-show="TabMenuPosition.visible" ref="TabMenu" :style="{top:TabMenuPosition.top+'px',left:TabMenuPosition.left+'px'}">
                 <div v-show="TabMenuPosition.isSetMenu" @@click="refreshTab" style="color:#67C23A"><i class="icon iconfont icon-reload"></i>刷新</div>
-                <div v-show="TabMenuPosition.isSetMenu" @@click="closeThisTab" style="color:#909399"><i class="icon iconfont icon-close"></i>关闭此标签</div>
+                <div v-show="TabMenuPosition.closeThis" @@click="closeThisTab" style="color:#909399"><i class="icon iconfont icon-close"></i>关闭此标签</div>
                 <div v-show="TabMenuPosition.isSetMenu" @@click="closeExcept" style="color:#E6A23C"><i class="icon iconfont icon-close-circle"></i>关闭除此之外</div>
                 <div @@click="closeAll" style="color:#F56C6C"><i class="icon iconfont icon-close-circle-fill"></i>关闭所有标签</div>
             </div>
@@ -190,7 +190,8 @@
                 title: '欢迎',
                 name: '1',
                 content: '/Welcome/Index',
-                closable: false
+                closable: false,
+                url:'/Welcome/Index'
             }],
             tabIndex: 1,
             TabMenuPosition: {
@@ -198,6 +199,7 @@
                 left: 20,
                 visible: false,
                 isSetMenu: false,
+                closeThis: false,
                 navName: null
             }
         },
@@ -249,12 +251,20 @@
                 this.editableTabs = tabs.filter(function (tab) { return tab.name !== targetName; });
             },
             tabContextmenu: function (tabName) {
+                console.log(tabName);
                 $app.TabMenuPosition.visible = false;
-                if (tabName == null || tabName=="1") {
+                if (tabName == null ) {
                     $app.TabMenuPosition.isSetMenu = false;
+                    $app.TabMenuPosition.closeThis = false;
+                }
+                else if (tabName == "1") {
+                    $app.TabMenuPosition.isSetMenu = true;
+                    $app.TabMenuPosition.closeThis = false;
+                    $app.TabMenuPosition.navName = "1";
                 }
                 else {
                     $app.TabMenuPosition.isSetMenu = true;
+                    $app.TabMenuPosition.closeThis = true;
                     $app.TabMenuPosition.navName = tabName;
                 }
                 this.TabMenuPosition.visible = false;

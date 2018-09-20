@@ -263,34 +263,12 @@
             submitAddForm: function () {
                 this.$refs.AddForm.validate(function (success, validateobj) {
                     if (success) {
-                        $vue.Loading.bodyLoading = true;
                         axios.post("AddUser", $vue.AddFormData).then(function (response) {
-                            $vue.Loading.bodyLoading = false;
-                            if (response.data.success) {
-                                $vue.$message({
-                                    type: 'success',
-                                    message: '新增成功',
-                                    showClose: true
-                                });
-                                getList();
-                            }
-                            else {
-                                $vue.$message({
-                                    type: 'info',
-                                    message: '新增失败',
-                                    showClose: true
-                                });
-                            }
-                            $vue.Dialog.addDialog = false;
-                        
+                            ActionCommonHandle(response.data, $vue, "新增成功", "新增失败", getList());
                         }).catch(function (error) {
+                            ErrorCommonHandle($vue);
+                        }).finally(function () {
                             $vue.Loading.bodyLoading = false;
-                            $vue.$message({
-                                type: 'error',
-                                message: '服务器异常',
-                                showClose: true
-                            });
-                            console.log(error);
                             $vue.Dialog.addDialog = false;
                         });
                     }
@@ -304,34 +282,12 @@
                     if (success) {
                         $vue.Loading.bodyLoading = true;
                         axios.post("EditUser", $vue.EditFormData).then(function (response) {
-                            $vue.Loading.bodyLoading = false;
-                            if (response.data.success) {
-                                $vue.$message({
-                                    type: 'success',
-                                    message: '修改成功',
-                                    showClose: true
-                                });
-                                getList();
-                            }
-                            else {
-                                $vue.$message({
-                                    type: 'info',
-                                    message: '修改失败',
-                                    showClose: true
-                                });
-                            }
-                            $vue.Dialog.editDialog = false;
-                         
+                            ActionCommonHandle(response.data, $vue, "修改成功", "修改失败", getList());
                         }).catch(function (error) {
+                            ErrorCommonHandle($vue);
+                        }).finally(function () {
                             $vue.Loading.bodyLoading = false;
-                            $vue.$message({
-                                type: 'error',
-                                message: '服务器异常',
-                                showClose: true
-                            });
-                            console.log(error);
                             $vue.Dialog.editDialog = false;
-                           
                         });
                     }
                 });
@@ -348,27 +304,12 @@
                     $vue.Loading.bodyLoading = true;
                     axios.post("DeleteUser", $vue.$refs.dataTable.selection).then(function (response) {
                         $vue.Loading.bodyLoading = false;
-                        if (response.data.success) {
-                            $vue.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            });
-                            getList();
-                        } else {
-                            $vue.$message({
-                                type: 'info',
-                                message: '删除失败!'
-                            });
-                        }
+                        ActionCommonHandle(response.data, $vue, "删除成功", "删除失败", getList());
                     }).catch(function (error) {
+                        ErrorCommonHandle($vue);
+                    }).finally(function () {
                         $vue.Loading.bodyLoading = false;
-                        $vue.$message({
-                            type: 'error',
-                            message: '服务器出错!'
-                        });
-                        console.log(error);
                     });
-                   
                 }).catch(function () {
                     $vue.$message({
                         type: 'info',
@@ -471,14 +412,6 @@
     }).catch(function (error) {
         console.log(error);
         });
-    axios.post("GetPageAuthorize", { menuId: GetUrlParameter("menuid") }).then(function (response) {
-        for (var m in $vue.ActionPermission) {
-            for (var n in response.data) {
-                if (m == response.data[n]) {
-                    $vue.ActionPermission[m] = true;
-                }
-            }
-        }
-        setTimeout(window.onresize, 0);
-    });
+
+    GetActionAuthorize($vue);
 </script>

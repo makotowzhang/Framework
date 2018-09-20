@@ -16,6 +16,55 @@
     }
 }
 
+function GetActionAuthorize(vueEx) {
+    axios.post("GetPageAuthorize", { menuId: GetUrlParameter("menuid") }).then(function (response) {
+        for (var m in vueEx.ActionPermission) {
+            for (var n in response.data) {
+                if (m == response.data[n]) {
+                    vueEx.ActionPermission[m] = true;
+                }
+            }
+        }
+        setTimeout(window.onresize, 0);
+    });
+}
+
+function ActionCommonHandle(resData, vueEx, successMsg, failedMsg, successCallback) {
+    if (successMsg == "") {
+        successMsg = resData.msg;
+    }
+    if (failedMsg == "") {
+        failedMsg = resData.msg;
+    }
+    if (resData.success) {
+        vueEx.$message({
+            type: 'success',
+            message: successMsg,
+            showClose: true
+        });
+        if (successCallback != undefined) {
+            successCallback();
+        }
+    }
+    else {
+        vueEx.$message({
+            type: 'info',
+            message: resData.msg == "" ? failedMsg : resData.msg,
+            showClose: true
+        });
+    }
+}
+
+function ErrorCommonHandle(vueEx) {
+    vueEx.$message({
+        type: 'error',
+        message: '服务器异常',
+        showClose: true
+    });
+    console.log(error);
+}
+
+//页面左击右击事件监听，去除Tab的菜单
 window.addEventListener("load", function () {
     document.body.addEventListener("click", function () {
         top.$app.TabMenuPosition.visible = false;
@@ -24,3 +73,15 @@ window.addEventListener("load", function () {
         top.$app.TabMenuPosition.visible = false;
     });
 });
+axios.interceptors.response.use(function (response) {
+    if (response.request.responseURL.indexOf("Login/Index") != -1) {
+        new Vue().$alert('登录会话过期请重新登录', '提示', {
+            confirmButtonText: '确定',
+            callback: function () {
+                top.location.href = "/Login/Index";
+            }
+        });
+    }
+    return response;    
+});
+
