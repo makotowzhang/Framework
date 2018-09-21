@@ -28,7 +28,20 @@
             box-sizing: border-box;
             border-bottom: 2px solid #66B1FF;
         }
-
+        .SignOutDiv {
+            float:right;
+            height:50px;
+            line-height:50px;
+            padding-right:50px;
+        }
+            .SignOutDiv button span {
+                font-size:18px;
+                margin-left:2px;
+            }
+            .SignOutDiv i {
+                font-size: 21px;
+                vertical-align: text-bottom;
+            }
         .MainDiv {
             height: calc(100% - 50px);
         }
@@ -137,7 +150,9 @@
                 <div @@click="closeAll" style="color:#F56C6C"><i class="icon iconfont icon-close-circle-fill"></i>关闭所有标签</div>
             </div>
             <div class="HeadDiv">
-
+                <div class="SignOutDiv">
+                    <el-button type="text" @@click="signout" icon="icon iconfont icon-poweroff">登出</el-button>
+                </div>
             </div>
             <div class="MainDiv">
                 <div class="MainLeft">
@@ -204,6 +219,15 @@
             }
         },
         methods: {
+            signout: function () {
+                this.$confirm('您是否确认登出系统', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(function () {
+                    window.location.href = "/Login/SignOut";
+                });
+            },
             handleOpen: function () {
 
             },
@@ -212,26 +236,32 @@
             },
             //选择菜单项触发
             addTab: function (index, indexPath) {
-                let item = getMenu(this.MenuList, index);
-                let temp;
-                this.editableTabs.forEach(function (tab, index) {
-                    if (item.Id == tab.name) {
-                        temp = tab;
+                axios.get("/Home/Test").then(function (response) {
+                    if (response.request.responseURL.indexOf("Login/Index") != -1) {
+                        return;
                     }
-                })
-                if (temp != null) {
-                    this.editableTabsValue = temp.name;
-                    return;
-                }
+                    let item = getMenu($app.MenuList, index);
+                    let temp;
+                    $app.editableTabs.forEach(function (tab, index) {
+                        if (item.Id == tab.name) {
+                            temp = tab;
+                        }
+                    })
+                    if (temp != null) {
+                        $app.editableTabsValue = temp.name;
+                        return;
+                    }
 
-                this.editableTabs.push({
-                    title: item.MenuName,
-                    name: item.Id,
-                    IconClass: item.IconClass,
-                    content: item.MenuUrl + "?MenuId=" + item.Id,
-                    url: item.MenuUrl
-                });
-                this.editableTabsValue = item.Id;
+                    $app.editableTabs.push({
+                        title: item.MenuName,
+                        name: item.Id,
+                        IconClass: item.IconClass,
+                        content: item.MenuUrl + "?MenuId=" + item.Id,
+                        url: item.MenuUrl
+                    });
+                    $app.editableTabsValue = item.Id;
+                })
+               
             },
             //移除标签触发
             removeTab: function (targetName) {

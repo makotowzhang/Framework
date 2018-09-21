@@ -7,65 +7,10 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-
-    <script src="~/Scripts/Vue/vue.js"></script>
-    <link href="~/Scripts/ElementUI/css/index.css" rel="stylesheet" />
-    <script src="~/Scripts/ElementUI/index.js"></script>
     <title>Index</title>
-
-
-
-    <script type="text/x-template" id="NavMenu">
-        <div>
-            <h1>{{model}}</h1>
-            <h2>{{text}}</h2>
-            <template v-for="(v,i) in list ">
-                <h1>{{v}}</h1>
-            </template>
-        </div>
-    </script>
-
-    <script type="text/x-template" id="NavMenu1">
-        <div >
-            <span v-for="(v,i) in model">{{v.NavName}}</span>
-        </div>
-    </script>
 </head>
 <body>
-    <div id="App">
-        <c1 :model="mod" :list="list"></c1>
-        <cbb :model="MenuList"></cbb>
+    <div>
     </div>
 </body>
 </html>
-<script>
-    
-    var c1 = Vue.extend({
-        props: ['model','list'],
-        data() {
-            return { text: "hollow world" }
-        },
-        template: '#NavMenu'
-    });
-    var ccc= new Vue({
-        el: "#App",
-        data: {
-            MenuList: [],
-            mod: "hhhhhhh",
-            list:["a","b","c"]
-        },
-        components: {
-            'c1': c1,
-            "cbb": Vue.extend({
-                props: ['model'],
-                template: '#NavMenu1'
-            })
-        }
-    });
-    ccc.mod = "cccccc";
-    ccc.list = ["aa", "bb", "cc"];
-    ccc.MenuList = [{ NavName: "导航一", NavId: "1", Icon: "el-icon-location" },
-    { NavName: "导航二", NavId: "2", Icon: "el-icon-menu" },
-    { NavName: "导航三", NavId: "3", Icon: "el-icon-document" },
-    { NavName: "导航四", NavId: "4", Icon: "" }];
-</script>
