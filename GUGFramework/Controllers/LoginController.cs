@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using Business.SystemBusiness;
 using Model.SystemModel;
+using Model.EnumModel;
 
 namespace GUGFramework.Controllers
 {
@@ -26,6 +27,15 @@ namespace GUGFramework.Controllers
                 if (user.IsEnabled == true)
                 {
                     FormsAuthentication.SetAuthCookie(user.Id.ToString(), false);
+                    new LogBusiness().AddLog(new LogModel()
+                    {
+                        ActionName="登录",
+                        MenuName="用户登录",
+                        ActionType=LogActionType.Login.ToString(),
+                        IpAddress=Common.HttpContextHelp.GetClientIp(Request),
+                        Description="",
+                        DoUser=user.Id
+                    });
                     return Json(new JsonMessage(true, "登录成功！"));
                 }
                 else
@@ -40,6 +50,8 @@ namespace GUGFramework.Controllers
            
         }
 
+
+        [LogFilter("登出","用户登录",LogActionType.LogOut)]
         public ActionResult SignOut()
         { 
             FormsAuthentication.SignOut();

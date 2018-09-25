@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Model.SystemModel;
 using Business.SystemBusiness;
+using Model.EnumModel;
 
 namespace GUGFramework.Controllers
 {
@@ -22,6 +23,7 @@ namespace GUGFramework.Controllers
             return Json(business.GetUserModel(userId));
         }
 
+        [LogFilter("新增", "用户管理", LogActionType.Operation)]
         public ActionResult AddUser(UserModel user)
         {
             try
@@ -36,6 +38,7 @@ namespace GUGFramework.Controllers
             }
         }
 
+        [LogFilter("修改", "用户管理", LogActionType.Operation)]
         public ActionResult EditUser(UserModel user)
         {
             try
@@ -67,6 +70,7 @@ namespace GUGFramework.Controllers
             return Json(new JsonMessage(business.CheckUserNameExsit(model, IsUpdate)));
         }
 
+        [LogFilter("删除", "用户管理", LogActionType.Operation)]
         public ActionResult DeleteUser(List<UserModel> model)
         {
             Guid updateUser = CurrentUser.Id;

@@ -21,6 +21,8 @@ namespace Business.SystemBusiness
                 m.CreateMap<RoleModel, System_Role>();
                 m.CreateMap<System_Menu, MenuModel>();
                 m.CreateMap<MenuModel, System_Menu>();
+                m.CreateMap<System_Log, LogModel>();
+                m.CreateMap<LogModel, System_Log>();
             });
         }
     }

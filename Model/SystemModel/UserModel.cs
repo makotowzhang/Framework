@@ -23,4 +23,13 @@ namespace Model.SystemModel
     {
         public string UserName { get; set; }
     }
+
+    public class ChangePwdModel
+    {
+        public string CurrentPwd { get;set;}
+
+        public string NewPwd { get; set; }
+
+        public string ConfirmPwd { get; set; }
+    }
 }

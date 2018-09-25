@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Business.SystemBusiness;
+using Model.EnumModel;
 using Model.SystemModel;
 
 namespace GUGFramework.Controllers
@@ -21,7 +22,7 @@ namespace GUGFramework.Controllers
         {
             return Json(business.GetRole(roleId));
         }
-
+        [LogFilter("新增", "角色管理", LogActionType.Operation)]
         public ActionResult AddRole(RoleModel model)
         {
             try
@@ -36,6 +37,7 @@ namespace GUGFramework.Controllers
             }
         }
 
+        [LogFilter("修改", "角色管理", LogActionType.Operation)]
         public ActionResult EditRole(RoleModel model)
         {
             try
@@ -62,6 +64,7 @@ namespace GUGFramework.Controllers
             return Json(business.GetAllRole(new RoleFilter()).Where(m=>m.IsEnabled==true));
         }
 
+        [LogFilter("删除", "角色管理", LogActionType.Operation)]
         public ActionResult DeleteRole(List<RoleModel> model)
         {
             Guid updateUser = CurrentUser.Id;

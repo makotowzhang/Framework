@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Business.SystemBusiness;
+using Model.EnumModel;
 using Model.SystemModel;
 
 
@@ -22,7 +23,7 @@ namespace GUGFramework.Controllers
         {
             return Json(business.GetAllMenu());
         }
-
+        [LogFilter("新增", "菜单管理", LogActionType.Operation)]
         public ActionResult AddMenu(MenuModel model)
         {
             model.CreateUser = CurrentUser.Id;
@@ -30,12 +31,14 @@ namespace GUGFramework.Controllers
             return Json(new JsonMessage(business.AddMenu(model,out menuId),menuId.ToString()));
         }
 
+        [LogFilter("修改", "菜单管理", LogActionType.Operation)]
         public ActionResult EditMenu(MenuModel model)
         {
             model.UpdateUser = CurrentUser.Id;
             return Json(new JsonMessage(business.EditMenu(model)));
         }
 
+        [LogFilter("删除", "菜单管理", LogActionType.Operation)]
         public ActionResult DeleteMenu(MenuModel model)
         {
             model.UpdateUser = CurrentUser.Id;

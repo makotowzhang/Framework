@@ -29,5 +29,31 @@ namespace GUGFramework.Controllers
         {
             return Json(CurrentUser,JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult CheckCurrentPwd(string password)
+        {
+            if (Common.MD5Encrypt.MD5Encrypt64(password) == CurrentUser.Password)
+            {
+                return Json(new JsonMessage(true));
+            }
+            else
+            {
+                return Json(new JsonMessage(false));
+            }
+        }
+
+        public ActionResult ChangePassword(ChangePwdModel model)
+        {
+            if (Common.MD5Encrypt.MD5Encrypt64(model.CurrentPwd) != CurrentUser.Password)
+            {
+                return Json(new JsonMessage(false,"原密码不正确"));
+            }
+            if (model.ConfirmPwd != model.NewPwd)
+            {
+                return Json(new JsonMessage(false, "确认密码与新密码不一致"));
+            }
+            bool res = new UserBusiness().ChangePwd(CurrentUser.Id, Common.MD5Encrypt.MD5Encrypt64(model.NewPwd));
+            return Json(new JsonMessage(res));
+        }
     }
 }

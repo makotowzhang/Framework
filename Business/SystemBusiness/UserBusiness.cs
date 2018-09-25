@@ -177,5 +177,16 @@ namespace Business.SystemBusiness
                 return true;
             }
         }
+
+        public bool ChangePwd(Guid userId, string newPwd)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                System_User user = data.GetUserById(dp, userId);
+                user.Password = newPwd;
+                dp.SaveChanges();
+                return true;
+            }
+        }
     }
 }

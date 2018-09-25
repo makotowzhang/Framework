@@ -15,6 +15,19 @@
           <Property Name="CreateUser" Type="uniqueidentifier" />
           <Property Name="CreateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="System_Log">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ActionName" Type="varchar" MaxLength="50" />
+          <Property Name="MenuName" Type="varchar" MaxLength="50" />
+          <Property Name="IpAddress" Type="varchar" MaxLength="50" />
+          <Property Name="ActionType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="varchar" MaxLength="200" />
+          <Property Name="DoUser" Type="uniqueidentifier" />
+          <Property Name="DoTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="System_Menu">
           <Key>
             <PropertyRef Name="Id" />
@@ -79,6 +92,7 @@
         </EntityType>
         <EntityContainer Name="FrameworkModelStoreContainer">
           <EntitySet Name="System_Authorize" EntityType="Self.System_Authorize" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="System_Log" EntityType="Self.System_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Menu" EntityType="Self.System_Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Role" EntityType="Self.System_Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_User" EntityType="Self.System_User" Schema="dbo" store:Type="Tables" />
@@ -94,6 +108,7 @@
           <EntitySet Name="System_UserRole" EntityType="Entity.System_UserRole" />
           <EntitySet Name="System_Menu" EntityType="Entity.System_Menu" />
           <EntitySet Name="System_Authorize" EntityType="Entity.System_Authorize" />
+          <EntitySet Name="System_Log" EntityType="Entity.System_Log" />
         </EntityContainer>
         <EntityType Name="System_User">
           <Key>
@@ -166,6 +181,19 @@
           <Property Name="RoleId" Type="Guid" />
           <Property Name="CreateUser" Type="Guid" />
           <Property Name="CreateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="System_Log">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ActionName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MenuName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IpAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ActionType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="DoUser" Type="Guid" />
+          <Property Name="DoTime" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -246,6 +274,20 @@
                 <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
                 <ScalarProperty Name="RoleId" ColumnName="RoleId" />
                 <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="System_Log">
+            <EntityTypeMapping TypeName="Entity.System_Log">
+              <MappingFragment StoreEntitySet="System_Log">
+                <ScalarProperty Name="DoTime" ColumnName="DoTime" />
+                <ScalarProperty Name="DoUser" ColumnName="DoUser" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="ActionType" ColumnName="ActionType" />
+                <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
+                <ScalarProperty Name="MenuName" ColumnName="MenuName" />
+                <ScalarProperty Name="ActionName" ColumnName="ActionName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

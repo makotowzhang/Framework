@@ -30,5 +30,6 @@ namespace Entity
         public virtual DbSet<System_UserRole> System_UserRole { get; set; }
         public virtual DbSet<System_Menu> System_Menu { get; set; }
         public virtual DbSet<System_Authorize> System_Authorize { get; set; }
+        public virtual DbSet<System_Log> System_Log { get; set; }
     }
 }
