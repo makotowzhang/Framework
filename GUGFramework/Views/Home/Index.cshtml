@@ -411,10 +411,13 @@
             }
         }
     });
-    axios.get("/Home/Test").then(function (response) {
+
+      
+    axios.post("/Home/GetMenu").then(function (response) {
         if (response.request.responseURL.indexOf("Login/Index") != -1) {
             return;
         }
+        $app.MenuList = response.data;
         $app.editableTabs.push({
             title: '欢迎',
             name: '1',
@@ -422,9 +425,6 @@
             closable: false,
             url: '/Welcome/Index'
         });
-    });
-    axios.post("/Home/GetMenu").then(function (response) {
-        $app.MenuList = response.data;
     });
 
     function getMenu(menuList, navId) {

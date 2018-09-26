@@ -26,9 +26,9 @@
                 </el-form>
                 <el-row class="Table_Button_Row">
                     <el-col :span="24">
-                        <el-button type="primary" ref="btnAdd" @@click="openAddDialog">新增</el-button>
-                        <el-button type="primary" :disabled="ButtonState.btnEdit" ref="btnEdit" @@click="openEditDialog">编辑</el-button>
-                        <el-button type="danger" :disabled="ButtonState.btnDelete" ref="btnDelete" @@click="deleteClick">删除</el-button>
+                        <el-button type="primary" v-if="ActionPermission.Add" ref="btnAdd" @@click="openAddDialog">新增</el-button>
+                        <el-button type="primary" v-if="ActionPermission.Edit" :disabled="ButtonState.btnEdit" ref="btnEdit" @@click="openEditDialog">编辑</el-button>
+                        <el-button type="danger" v-if="ActionPermission.Delete" :disabled="ButtonState.btnDelete" ref="btnDelete" @@click="deleteClick">删除</el-button>
                     </el-col>
                 </el-row>
             </div>
@@ -196,6 +196,11 @@
                 total: 0
             },
             PaginationFilter: {
+            },
+            ActionPermission: {
+                Add: false,
+                Delete: false,
+                Edit: false
             }
         },
         methods: {
@@ -398,5 +403,5 @@
     }
     window.onresize();
     getList();
-   
+    GetActionAuthorize($vue);
 </script>

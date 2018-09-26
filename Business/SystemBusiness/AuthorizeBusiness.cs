@@ -53,5 +53,13 @@ namespace Business.SystemBusiness
                 return Mapper.Map<List<MenuModel>>(data.GetAuthorizeAction(dp, menuId, roleList.Select(m=>m.Id).ToList()));
             }
         }
+
+        public bool CheckUserViewAuthorize(Guid menuId, Guid userId)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                return data.CheckUserViewAuthorize(dp, menuId, userId);
+            }
+        }
     }
 }

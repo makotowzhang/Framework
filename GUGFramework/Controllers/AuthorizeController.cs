@@ -13,6 +13,7 @@ namespace GUGFramework.Controllers
     {
         AuthorizeBusiness business = new AuthorizeBusiness();
         // GET: Authorize
+        [PageAuthorizeFilter]
         public ActionResult Index()
         {
             return View();

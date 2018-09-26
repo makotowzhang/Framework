@@ -14,6 +14,7 @@ namespace GUGFramework.Controllers
     {
         MenuBusiness business = new MenuBusiness();
         // GET: Menu
+        [PageAuthorizeFilter]
         public ActionResult Index()
         {
             return View();

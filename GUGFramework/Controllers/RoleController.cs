@@ -13,6 +13,7 @@ namespace GUGFramework.Controllers
     {
         private RoleBusiness business = new RoleBusiness();
         // GET: Role
+        [PageAuthorizeFilter]
         public ActionResult Index()
         {
             return View();

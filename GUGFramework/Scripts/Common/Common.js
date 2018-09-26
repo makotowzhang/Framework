@@ -17,7 +17,7 @@
 }
 
 function GetActionAuthorize(vueEx) {
-    axios.post("GetPageAuthorize", { menuId: GetUrlParameter("menuid") }).then(function (response) {
+    axios.post("GetPageAuthorize", {}).then(function (response) {
         for (var m in vueEx.ActionPermission) {
             for (var n in response.data) {
                 if (m == response.data[n]) {
@@ -73,6 +73,23 @@ window.addEventListener("load", function () {
         top.$app.TabMenuPosition.visible = false;
     });
 });
+axios.interceptors.request.use(function (request) {
+    var menuId = GetUrlParameter("MenuId");
+    if (menuId == null || menuId == "") {
+        return request;
+    }
+    if (request.method == "post") {
+        if (request.data == null) {
+            request.data = {};
+        }
+        if (request.data.menuId == null) {
+            request.data.menuId = menuId;
+        }
+    }
+    return request;
+});
+
+
 axios.interceptors.response.use(function (response) {
     if (response.request.responseURL.indexOf("Login/Index") != -1) {
         new Vue().$alert('登录会话过期请重新登录', '提示', {
