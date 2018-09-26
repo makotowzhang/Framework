@@ -16,5 +16,20 @@ namespace Model.SystemModel
         public string Description { get; set; }
         public Guid? DoUser { get; set; }
         public DateTime? DoTime { get; set; }
+        public string DoUserName { get; set; }
+
+    }
+
+    public class LogFilter : PageModel
+    {
+        public string ActionName { get; set; }
+
+        public string MenuName { get; set; }
+
+        public string ActionType { get; set; }
+
+        public string DoUserName { get; set; }
+
+        public List<DateTime> DoTimeRange { get; set; }
     }
 }
