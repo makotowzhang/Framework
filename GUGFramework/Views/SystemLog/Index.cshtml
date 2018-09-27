@@ -64,31 +64,29 @@
                 </el-table-column>
                 <el-table-column prop="ActionName"
                                  label="动作名称"
-                                 width="180">
+                                 width="80">
                 </el-table-column>
                 <el-table-column prop="MenuName"
                                  label="菜单名称"
-                                 width="180">
+                                 width="120">
                 </el-table-column>
                 <el-table-column prop="IpAddress"
-                                 label="Ip地址"
-                                 width="180">
-                </el-table-column>
-                <el-table-column prop="IpAddress"
-                                 label="Ip地址"
-                                 width="180">
+                                 label="Ip地址">
                 </el-table-column>
                 <el-table-column prop="ActionType"
-                                 label="操作类型"
-                                 width="180">
+                                 label="操作类型">
+                    <template slot-scope="scope">
+                        {{ Dic.ActionType[scope.row.ActionType] }}
+                    </template>
                 </el-table-column>
                 <el-table-column prop="DoUserName"
-                                 label="操作人"
-                                 width="180">
+                                 label="操作人">
                 </el-table-column>
                 <el-table-column prop="DoTime"
-                                 label="操作时间"
-                                 width="180">
+                                 label="操作时间">
+                    <template slot-scope="scope">
+                        {{ DateFormat(scope.row.DoTime,'yyyy-MM-dd HH:mm:ss') }}
+                    </template>
                 </el-table-column>
 
             </el-table>
@@ -116,7 +114,9 @@
                 MenuName: "",
                 ActionType:"",
                 DoUserName: "",
-                DoTimeRange:[]
+                DoTimeRange: "",
+                Page: 1,
+                PageSize: 10
             },
             tableData: [],
             tableHeight: 500,
@@ -126,6 +126,7 @@
             },
             SelectOption: {
                 ActionType: [
+                    { Value: "", Text: "" },
                     { Value: "Login", Text: "登录" },
                     { Value: "LogOut", Text: "登出" },
                     { Value: "Operation", Text: "业务操作" },
@@ -138,6 +139,15 @@
                 total: 0
             },
             PaginationFilter: {
+            },
+            Dic: {
+                ActionType: {
+                    Login:"登录",
+                    LogOut:"登出",
+                    Operation: "业务操作",
+                    Error: "系统错误",
+                    ModifyPara: "修改参数"
+                }
             }
         },
         methods: {
@@ -164,8 +174,8 @@
                 this.PaginationFilter.Page = val;
                 this.PaginationFilter.PageSize = this.QueryFormData.PageSize;
                 getList(this.PaginationFilter);
-            }
-          
+            },
+            DateFormat: DateFormat
         }
 
     });
@@ -175,7 +185,7 @@
             filter = $vue.QueryFormData;
         }
         $vue.Loading.tableLoading = true;
-        axios.post("GetUserList", filter).then(function (response) {
+        axios.post("GetLogList", filter).then(function (response) {
             $vue.Loading.tableLoading = false;
             $vue.tableData = response.data.List;
             $vue.PaginationData.total = response.data.Total;

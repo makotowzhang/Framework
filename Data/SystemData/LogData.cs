@@ -15,9 +15,46 @@ namespace Data.SystemData
             dp.System_Log.Add(log);
         }
 
-        public void GetLogList(DataProvider dp, LogFilter filter)
+        public List<LogModel> GetLogList(DataProvider dp, LogFilter filter,out int total)
         {
-
+            var logView = from log in dp.System_Log
+                          join user in dp.System_User on log.DoUser equals user.Id
+                          select new LogModel
+                          {
+                              ActionName = log.ActionName,
+                              Description = log.Description,
+                              ActionType = log.ActionType,
+                              DoTime = log.DoTime,
+                              DoUser = log.DoUser,
+                              DoUserName = user.TrueName,
+                              IpAddress = log.IpAddress,
+                              Id = log.Id,
+                              MenuName = log.MenuName
+                          };
+            if (!string.IsNullOrWhiteSpace(filter.ActionName))
+            {
+                logView = logView.Where(m => m.ActionName.Contains(filter.ActionName));
+            }
+            if (!string.IsNullOrWhiteSpace(filter.MenuName))
+            {
+                logView = logView.Where(m => m.MenuName.Contains(filter.MenuName));
+            }
+            if (!string.IsNullOrWhiteSpace(filter.ActionType))
+            {
+                logView = logView.Where(m => m.ActionType==filter.ActionType);
+            }
+            if (!string.IsNullOrWhiteSpace(filter.DoUserName))
+            {
+                logView = logView.Where(m => m.DoUserName.Contains(filter.DoUserName));
+            }
+            if (filter.DoTimeRange!=null&&filter.DoTimeRange.Count()==2)
+            {
+                var dataFrom = filter.DoTimeRange[0];
+                var dataTo = filter.DoTimeRange[1];
+                logView = logView.Where(m => m.DoTime >= dataFrom && m.DoTime <= dataTo);
+            }
+            total = logView.Count();
+            return logView.OrderByDescending(m=>m.DoTime).Skip(filter.Skip).Take(filter.PageSize).ToList();
         }
     }
 }

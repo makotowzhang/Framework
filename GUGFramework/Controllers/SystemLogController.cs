@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Model.SystemModel;
 using Business.SystemBusiness;
 
 namespace GUGFramework.Controllers
 {
-    public class SystemLogController : Controller
+    public class SystemLogController : BaseController
     {
+        private LogBusiness business = new LogBusiness();
         // GET: SystemLog
         [PageAuthorizeFilter]
         public ActionResult Index()
@@ -17,9 +17,9 @@ namespace GUGFramework.Controllers
             return View();
         }
 
-        public ActionResult GetLogList(LogFilter filter)
+        public ActionResult GetLogList(Model.SystemModel.LogFilter filter)
         {
-            return View();
+            return Json(business.GetLogList(filter));
         }
     }
 }

@@ -23,5 +23,14 @@ namespace Business.SystemBusiness
                 return true;
             }
         }
+
+        public TableDataModel GetLogList(LogFilter filter)
+        {
+            using (DataProvider dp = new DataProvider())
+            {
+                var tableData = data.GetLogList(dp, filter, out int total);
+                return new TableDataModel(total, tableData);
+            }
+        }
     }
 }
