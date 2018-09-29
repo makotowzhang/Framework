@@ -101,6 +101,7 @@ function DateFormat(date, format) {
 window.addEventListener("load", function () {
     document.body.addEventListener("click", function () {
         top.$app.TabMenuPosition.visible = false;
+        top.$app.MessageDiv.visible = false;
     });
     document.body.addEventListener("contextmenu", function () {
         top.$app.TabMenuPosition.visible = false;

@@ -36,16 +36,53 @@
             padding-right: 50px;
         }
 
-            .SignOutDiv button span {
+            .SignOutDiv .textButton span{
                 font-size: 18px;
                 margin-left: 2px;
             }
 
-            .SignOutDiv i {
-                font-size: 21px;
-                vertical-align: text-bottom;
-            }
+                .SignOutDiv .textButton i {
+                    font-size: 21px;
+                    vertical-align: text-bottom;
+                }
 
+            .SignOutDiv .el-badge__content,.is-fixed {
+                top: 12px;
+                right: 30px;
+            }
+        .msgButton {
+            font-size: 28px;
+            color: white;
+            margin-right: 20px;
+            cursor: pointer
+        }
+        .msgButton:hover {
+            color: #409EFF;
+        }
+        .box-card {
+            position:absolute;
+            width:200px;
+            z-index:1499;
+            top:38px;
+            left:-175px;
+        }
+        .msgContent {
+            line-height: 25px;
+            padding-left: 15px;
+            padding-right: 15px;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            cursor: pointer;
+        }
+        .msgContent i {
+            vertical-align: middle;
+        }
+        .msgContent:hover {
+            background-color: lightgray;
+        }
+        .el-card__body {
+            padding:0;
+        }
         .MainDiv {
             height: calc(100% - 50px);
         }
@@ -157,8 +194,25 @@
             </div>
             <div class="HeadDiv">
                 <div class="SignOutDiv">
-                    <el-button type="text" @@click="openPwdDialog" icon="icon iconfont icon-interation">修改密码</el-button>
-                    <el-button type="text" @@click="signout" icon="icon iconfont icon-poweroff">登出</el-button>
+                    <el-badge :value="MessageDiv.messageNum" :max="99" :hidden="MessageDiv.messageNum==0" class="item">
+                        <i class="icon iconfont icon-mail msgButton" @@click.stop="MessageDiv.visible=!MessageDiv.visible"></i>
+                        <el-card class="box-card" v-show="MessageDiv.visible" shadow="always">
+                            <template v-for="item in MessageData">
+                                <el-tooltip  effect="dark" :content="item.Content" placement="left">
+                                    <div :style="{color:item.IsRead?'#909399':'#E6A23C'}" class="msgContent">
+                                        <i :class="getMessageIcon(item.Type)"></i>
+                                        {{getMessageShortTitle(item.Title)}}
+                                    </div>
+                                </el-tooltip>
+                            </template>
+                            <div style="text-align:center;padding:0;line-height:30px;" >
+                                <el-button type="text">查看更多</el-button>
+                            </div>
+
+                        </el-card>
+                    </el-badge>
+                    <el-button type="text" @@click="openPwdDialog" icon="icon iconfont icon-interation" class="textButton">修改密码</el-button>
+                    <el-button type="text" @@click="signout" icon="icon iconfont icon-poweroff" class="textButton">登出</el-button>
                 </div>
             </div>
             <div class="MainDiv">
@@ -264,7 +318,37 @@
             },
             Loading: {
                 bodyLoading:false
-            }
+            },
+            MessageDiv: {
+                visible: false,
+                messageNum:99
+            },
+            MessageData: [
+                {
+                    Title: "物品领用审批物品领用审批物品领用审批",
+                    Content: "xx领用了yy",
+                    IsRead: false,
+                    Type:"Audit"
+                },
+                {
+                    Title: "领用审批通过领用审批通过领用审批通过",
+                    Content: "xx审批通过了你的yy领用",
+                    IsRead: false,
+                    Type: "Message"
+                },
+                {
+                    Title: "物品领用审批",
+                    Content: "xx领用了yy",
+                    IsRead: true,
+                    Type: "Audit"
+                },
+                {
+                    Title: "领用审批通过",
+                    Content: "xx审批通过了你的yy领用",
+                    IsRead: true,
+                    Type: "Message"
+                }
+            ]
         },
         methods: {
             signout: function () {
@@ -408,6 +492,23 @@
                     this.$options.methods.removeTab.bind(this)(this.editableTabs[i].name);
                 }
                 this.TabMenuPosition.visible = false;
+            },
+            getMessageIcon: function (msgType) {
+                if (msgType == "Message") {
+                    return "icon iconfont icon-message";
+                }
+                if (msgType == "Audit") {
+                    return "icon iconfont icon-audit";
+                }
+            },
+            getMessageShortTitle: function (title) {
+                if (title.length > 9) {
+                    return title.substr(0, 8) + "...";
+                }
+                else {
+                    return title;
+                }
+             
             }
         }
     });
