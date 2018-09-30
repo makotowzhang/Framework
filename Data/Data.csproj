@@ -54,6 +54,7 @@
     <Compile Include="SystemData\LoginData.cs" />
     <Compile Include="SystemData\MenuData.cs" />
     <Compile Include="SystemData\RoleData.cs" />
+    <Compile Include="SystemData\SysMessageData.cs" />
     <Compile Include="SystemData\UserData.cs" />
   </ItemGroup>
   <ItemGroup>

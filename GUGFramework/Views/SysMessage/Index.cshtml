@@ -8,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>系统日志</title>
+    <title>系统消息</title>
     @Html.Partial("~/Views/Shared/_Head.cshtml")
 </head>
 <body>
@@ -17,35 +17,38 @@
             <div ref="QueryFormDiv">
                 <el-form :model="QueryFormData" label-width="70px" label-position="left" :inline="true" class="Query_Form" ref="QueryForm" @@submit.native.prevent>
                     <el-row>
-                        <el-col :span="6">
-                            <el-form-item label="操作名称" prop="ActionName">
-                                <el-input v-model="QueryFormData.ActionName"></el-input>
+                        <el-col :span="8">
+                            <el-form-item label="操作名称"  prop="MsgTitle">
+                                <el-input v-model="QueryFormData.MsgTitle"></el-input>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6">
-                            <el-form-item label="菜单名称" prop="MenuName">
-                                <el-input v-model="QueryFormData.MenuName"></el-input>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="6">
-                            <el-form-item label="操作类型" prop="ActionType">
-                                <el-select v-model="QueryFormData.ActionType"  :clearable="true">
-                                    <el-option v-for="item in SelectOption.ActionType"
+                        <el-col :span="8">
+                            <el-form-item label="消息类型" prop="MsgType">
+                                <el-select v-model="QueryFormData.MsgType" :clearable="true">
+                                    <el-option v-for="item in SelectOption.MessageType"
                                                :key="item.Value"
                                                :label="item.Text"
                                                :value="item.Value">
                                     </el-option>
                                 </el-select>
+
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6">
-                            <el-form-item label="操作人" prop="DoUserName">
-                                <el-input v-model="QueryFormData.DoUserName"></el-input>
+                        <el-col :span="8">
+                            <el-form-item label="阅读状态" prop="IsRead">
+                                <el-select v-model="QueryFormData.IsRead" :clearable="true">
+                                    <el-option v-for="item in SelectOption.IsRead"
+                                               :key="item.Value"
+                                               :label="item.Text"
+                                               :value="item.Value">
+                                    </el-option>
+                                </el-select>
+
                             </el-form-item>
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col :span="6">
+                        <el-col :span="8">
                             <el-form-item label="开始时间" prop="BeginTime">
                                 <el-date-picker v-model="QueryFormData.BeginTime"
                                                 type="datetime"
@@ -54,7 +57,7 @@
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="6">
+                        <el-col :span="8">
                             <el-form-item label="结束时间" prop="EndTime">
                                 <el-date-picker v-model="QueryFormData.EndTime"
                                                 type="datetime"
@@ -63,13 +66,12 @@
                                 </el-date-picker>
                             </el-form-item>
                         </el-col>
-                        <el-col :span="12">
+                        <el-col :span="8">
                             <el-form-item>
                                 <el-button type="primary" @@click="onQuery">查询</el-button>
                                 <el-button type="primary" @@click="resetQueryForm">重置</el-button>
                             </el-form-item>
                         </el-col>
-                    </el-row>
                 </el-form>
             </div>
             <el-table ref="dataTable"
@@ -85,32 +87,37 @@
                                  :index="showIdex"
                                  label=" ">
                 </el-table-column>
-                <el-table-column prop="ActionName"
-                                 label="动作名称"
+                <el-table-column prop="MsgTitle"
+                                 label="消息标题"
+                                 width="200">
+                </el-table-column>
+                <el-table-column prop="MsgContent"
+                                 label="消息内容">
+                </el-table-column>
+                <el-table-column prop="MsgType"
+                                 label="消息类型"
                                  width="80">
-                </el-table-column>
-                <el-table-column prop="MenuName"
-                                 label="菜单名称"
-                                 width="120">
-                </el-table-column>
-                <el-table-column prop="IpAddress"
-                                 label="Ip地址">
-                </el-table-column>
-                <el-table-column prop="ActionType"
-                                 label="操作类型">
                     <template slot-scope="scope">
-                        {{ Dic.ActionType[scope.row.ActionType] }}
+                        {{ Dic.MessageType[scope.row.MsgType]  }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="DoUserName"
-                                 label="操作人">
-                </el-table-column>
-                <el-table-column prop="DoTime"
-                                 label="操作时间">
+                <el-table-column prop="IsRead"
+                                 label="阅读状态"
+                                 width="80">
                     <template slot-scope="scope">
-                        {{ DateFormat(scope.row.DoTime,'yyyy-MM-dd HH:mm:ss') }}
+                        {{ scope.row.IsRead?"已读":"未读" }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="CreateTime"
+                                 label="发送时间"
+                                 width="200">
+                    <template slot-scope="scope">
+                        {{ DateFormat(scope.row.CreateTime,'yyyy-MM-dd HH:mm:ss') }}
+                    </template>
+
+                </el-table-column>
+
+
 
             </el-table>
             <div ref="Pagination">
@@ -133,12 +140,11 @@
         el: "#App",
         data: {
             QueryFormData: {
-                ActionName: "",
-                MenuName: "",
-                ActionType:"",
-                DoUserName: "",
+                MsgTitle: "",
+                MsgType: "",
+                IsRead: null,
                 BeginTime: "",
-                EndTime:"",
+                EndTime: "",
                 Page: 1,
                 PageSize: 10
             },
@@ -149,12 +155,13 @@
                 tableLoading: false
             },
             SelectOption: {
-                ActionType: [
-                    { Value: "Login", Text: "登录" },
-                    { Value: "LogOut", Text: "登出" },
-                    { Value: "Operation", Text: "业务操作" },
-                    { Value: "Error", Text: "系统错误" },
-                    { Value: "ModifyPara", Text: "修改参数" },
+                MessageType: [
+                    { Value: "Message", Text: "短消息" },
+                    { Value: "Audit", Text: "审核消息" }
+                ],
+                IsRead: [
+                    { Value: true, Text: "已读" },
+                    { Value: false, Text: "未读" }
                 ]
             },
             PaginationData: {
@@ -164,12 +171,9 @@
             PaginationFilter: {
             },
             Dic: {
-                ActionType: {
-                    Login:"登录",
-                    LogOut:"登出",
-                    Operation: "业务操作",
-                    Error: "系统错误",
-                    ModifyPara: "修改参数"
+                MessageType: {
+                    Message: "短消息",
+                    Audit: "审核消息"
                 }
             }
         },
@@ -208,7 +212,7 @@
             filter = $vue.QueryFormData;
         }
         $vue.Loading.tableLoading = true;
-        axios.post("GetLogList", filter).then(function (response) {
+        axios.post("GetMsgList", filter).then(function (response) {
             $vue.Loading.tableLoading = false;
             $vue.tableData = response.data.List;
             $vue.PaginationData.total = response.data.Total;

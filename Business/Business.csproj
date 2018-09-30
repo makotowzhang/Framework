@@ -62,6 +62,7 @@
     <Compile Include="SystemBusiness\LoginBusiness.cs" />
     <Compile Include="SystemBusiness\MenuBusiness.cs" />
     <Compile Include="SystemBusiness\RoleBusiness.cs" />
+    <Compile Include="SystemBusiness\SysMessageBusiness.cs" />
     <Compile Include="SystemBusiness\UserBusiness.cs" />
   </ItemGroup>
   <ItemGroup>

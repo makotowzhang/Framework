@@ -30,6 +30,8 @@ namespace Model.SystemModel
 
         public string DoUserName { get; set; }
 
-        public List<DateTime> DoTimeRange { get; set; }
+        public DateTime? BeginTime { get; set; }
+
+        public DateTime? EndTime { get; set; }
     }
 }

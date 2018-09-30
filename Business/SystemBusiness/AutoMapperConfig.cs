@@ -23,6 +23,8 @@ namespace Business.SystemBusiness
                 m.CreateMap<MenuModel, System_Menu>();
                 m.CreateMap<System_Log, LogModel>();
                 m.CreateMap<LogModel, System_Log>();
+                m.CreateMap<System_Message, SysMessageModel>();
+                m.CreateMap<SysMessageModel, System_Message>();
             });
         }
     }

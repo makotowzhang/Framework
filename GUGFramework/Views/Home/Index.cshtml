@@ -198,15 +198,15 @@
                         <i class="icon iconfont icon-mail msgButton" @@click.stop="MessageDiv.visible=!MessageDiv.visible"></i>
                         <el-card class="box-card" v-show="MessageDiv.visible" shadow="always">
                             <template v-for="item in MessageData">
-                                <el-tooltip  effect="dark" :content="item.Content" placement="left">
+                                <el-tooltip  effect="dark" :content="item.MsgContent" placement="left">
                                     <div :style="{color:item.IsRead?'#909399':'#E6A23C'}" class="msgContent">
-                                        <i :class="getMessageIcon(item.Type)"></i>
-                                        {{getMessageShortTitle(item.Title)}}
+                                        <i :class="getMessageIcon(item.MsgType)"></i>
+                                        {{getMessageShortTitle(item.MsgTitle)}}
                                     </div>
                                 </el-tooltip>
                             </template>
                             <div style="text-align:center;padding:0;line-height:30px;" >
-                                <el-button type="text">查看更多</el-button>
+                                <el-button type="text" @@click="addTab('C61BA937-ACF9-48D0-8957-BC021B9605F7')">查看更多</el-button>
                             </div>
 
                         </el-card>
@@ -321,34 +321,9 @@
             },
             MessageDiv: {
                 visible: false,
-                messageNum:99
+                messageNum:0
             },
-            MessageData: [
-                {
-                    Title: "物品领用审批物品领用审批物品领用审批",
-                    Content: "xx领用了yy",
-                    IsRead: false,
-                    Type:"Audit"
-                },
-                {
-                    Title: "领用审批通过领用审批通过领用审批通过",
-                    Content: "xx审批通过了你的yy领用",
-                    IsRead: false,
-                    Type: "Message"
-                },
-                {
-                    Title: "物品领用审批",
-                    Content: "xx领用了yy",
-                    IsRead: true,
-                    Type: "Audit"
-                },
-                {
-                    Title: "领用审批通过",
-                    Content: "xx审批通过了你的yy领用",
-                    IsRead: true,
-                    Type: "Message"
-                }
-            ]
+            MessageData: [ ]
         },
         methods: {
             signout: function () {
@@ -435,6 +410,7 @@
                 this.editableTabsValue = activeName;
                 this.editableTabs = tabs.filter(function (tab) { return tab.name !== targetName; });
             },
+            //标签右键事件
             tabContextmenu: function (tabName) {
                 console.log(tabName);
                 $app.TabMenuPosition.visible = false;
@@ -528,6 +504,14 @@
         });
     });
 
+    axios.post("/SysMessage/GetNotReadCount").then(function (response) {
+        $app.MessageDiv.messageNum = response.data;
+    });
+
+    axios.post("/SysMessage/GetMsgList", {  Page: 1, PageSize: 5}).then(function (response) {
+        $app.MessageData = response.data.List;
+    });
+
     function getMenu(menuList, navId) {
         var menu;
         for (var i = 0; i < menuList.length; i++) {
@@ -535,7 +519,7 @@
             if (menu != null) {
                 break;
             }
-            if (m.Id == navId) {
+            if (m.Id.toUpperCase() == navId.toUpperCase()) {
                 menu = m;
             }
             if (menu == null && m.Children != null && m.Children.length > 0) {

@@ -160,6 +160,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\SysMessageController.cs" />
     <Compile Include="Controllers\SystemLogController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\WelcomeController.cs" />
@@ -238,6 +239,7 @@
     <Content Include="Views\Authorize\Index.cshtml" />
     <Content Include="Views\Shared\_Head.cshtml" />
     <Content Include="Views\SystemLog\Index.cshtml" />
+    <Content Include="Views\SysMessage\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">

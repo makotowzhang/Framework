@@ -48,6 +48,21 @@
           <Property Name="UpdateUser" Type="uniqueidentifier" />
           <Property Name="UpdateTime" Type="datetime" />
         </EntityType>
+        <EntityType Name="System_Message">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MsgTitle" Type="varchar" MaxLength="50" />
+          <Property Name="MsgContent" Type="varchar" MaxLength="500" />
+          <Property Name="MsgType" Type="varchar" MaxLength="50" />
+          <Property Name="Url" Type="varchar" MaxLength="500" />
+          <Property Name="IsRead" Type="bit" Nullable="false" />
+          <Property Name="IsDel" Type="bit" Nullable="false" />
+          <Property Name="ToUser" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreateUser" Type="varchar" MaxLength="50" />
+          <Property Name="CreateTime" Type="datetime" />
+        </EntityType>
         <EntityType Name="System_Role">
           <Key>
             <PropertyRef Name="Id" />
@@ -94,6 +109,7 @@
           <EntitySet Name="System_Authorize" EntityType="Self.System_Authorize" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Log" EntityType="Self.System_Log" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Menu" EntityType="Self.System_Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="System_Message" EntityType="Self.System_Message" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_Role" EntityType="Self.System_Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_User" EntityType="Self.System_User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="System_UserRole" EntityType="Self.System_UserRole" Schema="dbo" store:Type="Tables" />
@@ -109,6 +125,7 @@
           <EntitySet Name="System_Menu" EntityType="Entity.System_Menu" />
           <EntitySet Name="System_Authorize" EntityType="Entity.System_Authorize" />
           <EntitySet Name="System_Log" EntityType="Entity.System_Log" />
+          <EntitySet Name="System_Message" EntityType="Entity.System_Message" />
         </EntityContainer>
         <EntityType Name="System_User">
           <Key>
@@ -194,6 +211,21 @@
           <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
           <Property Name="DoUser" Type="Guid" />
           <Property Name="DoTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="System_Message">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MsgTitle" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="MsgContent" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="MsgType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Url" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ToUser" Type="Guid" Nullable="false" />
+          <Property Name="CreateUser" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="IsRead" Type="Boolean" Nullable="false" />
+          <Property Name="IsDel" Type="Boolean" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -288,6 +320,22 @@
                 <ScalarProperty Name="IpAddress" ColumnName="IpAddress" />
                 <ScalarProperty Name="MenuName" ColumnName="MenuName" />
                 <ScalarProperty Name="ActionName" ColumnName="ActionName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="System_Message">
+            <EntityTypeMapping TypeName="Entity.System_Message">
+              <MappingFragment StoreEntitySet="System_Message">
+                <ScalarProperty Name="IsDel" ColumnName="IsDel" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateUser" ColumnName="CreateUser" />
+                <ScalarProperty Name="ToUser" ColumnName="ToUser" />
+                <ScalarProperty Name="Url" ColumnName="Url" />
+                <ScalarProperty Name="MsgType" ColumnName="MsgType" />
+                <ScalarProperty Name="MsgContent" ColumnName="MsgContent" />
+                <ScalarProperty Name="MsgTitle" ColumnName="MsgTitle" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

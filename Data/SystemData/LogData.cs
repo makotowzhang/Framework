@@ -47,11 +47,13 @@ namespace Data.SystemData
             {
                 logView = logView.Where(m => m.DoUserName.Contains(filter.DoUserName));
             }
-            if (filter.DoTimeRange!=null&&filter.DoTimeRange.Count()==2)
+            if (filter.BeginTime!=null)
             {
-                var dataFrom = filter.DoTimeRange[0];
-                var dataTo = filter.DoTimeRange[1];
-                logView = logView.Where(m => m.DoTime >= dataFrom && m.DoTime <= dataTo);
+                logView = logView.Where(m => m.DoTime >= filter.BeginTime);
+            }
+            if (filter.EndTime != null)
+            {
+                logView = logView.Where(m => m.DoTime <= filter.EndTime);
             }
             total = logView.Count();
             return logView.OrderByDescending(m=>m.DoTime).Skip(filter.Skip).Take(filter.PageSize).ToList();

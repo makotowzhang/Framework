@@ -75,6 +75,9 @@
     <Compile Include="System_Menu.cs">
       <DependentUpon>DataEntity.tt</DependentUpon>
     </Compile>
+    <Compile Include="System_Message.cs">
+      <DependentUpon>DataEntity.tt</DependentUpon>
+    </Compile>
     <Compile Include="System_Role.cs">
       <DependentUpon>DataEntity.tt</DependentUpon>
     </Compile>
